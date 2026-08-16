@@ -1,26 +1,177 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* The three brand pinks, as utilities: bg-brand-cerise, from-brand-sand… */
+  --color-brand-magenta: var(--brand-magenta);
+  --color-brand-sand: var(--brand-sand);
+  --color-brand-cerise: var(--brand-cerise);
+  --color-brand-ink: var(--brand-ink);
+  /* macOS-first UI stack. `-apple-system` / `BlinkMacSystemFont` resolve to
+     the real San Francisco on Apple platforms; every other OS falls through
+     to the Inter webfont, which matches SF Pro closely. */
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
+    var(--font-inter), "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  /* Terminal / code: SF Mono on Macs, Geist Mono as the portable stand-in. */
+  --font-mono:
+    ui-monospace, "SF Mono", SFMono-Regular, Menlo, Monaco,
+    var(--font-geist-mono), Consolas, "Liberation Mono", monospace;
+  --font-heading: var(--font-sans);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* ---------------------------------------------------------------------------
+   Brand palette — three pinks, everything else is derived from them.
+
+     magenta  #9F2B68  the action colour: deep enough to carry white text
+     cerise   #DE3163  the accent/focus colour, and the brighter half of
+                       every gradient
+     sand     #F2D2BD  the warm neutral: surfaces, borders, dark-mode text
+
+   Two of the three are near hue 350–10 (rose/cerise) and sand sits at hue 55,
+   which is what keeps the scheme from reading as flat pink.
+--------------------------------------------------------------------------- */
+:root {
+  --brand-magenta: #9f2b68;
+  --brand-sand: #f2d2bd;
+  --brand-cerise: #de3163;
+  /* The near-black the palette resolves to — deep plum, not neutral grey. */
+  --brand-ink: #2a1220;
+}
+
+/* Light: sand-tinted surfaces under magenta ink. Contrast against the body
+   text (#3A1A2C) stays above 11:1 on every surface below. */
+:root {
+  --background: oklch(0.987 0.005 68);
+  --foreground: oklch(0.27 0.057 347);
+  --card: oklch(0.997 0.004 68);
+  --card-foreground: oklch(0.27 0.057 347);
+  --popover: oklch(0.997 0.004 68);
+  --popover-foreground: oklch(0.27 0.057 347);
+  /* Magenta with white text — 6.95:1. Cerise would have been prettier here
+     but white on it is 4.44:1, just under AA. */
+  --primary: oklch(0.487 0.162 352.6);
+  --primary-foreground: oklch(0.995 0.003 68);
+  --secondary: oklch(0.964 0.015 61);
+  --secondary-foreground: oklch(0.36 0.075 350);
+  --muted: oklch(0.968 0.013 61);
+  --muted-foreground: oklch(0.494 0.065 351);
+  --accent: oklch(0.944 0.02 63);
+  --accent-foreground: oklch(0.34 0.08 350);
+  --destructive: oklch(0.62 0.2 25);
+  --border: oklch(0.896 0.027 58);
+  --input: oklch(0.896 0.027 58);
+  --ring: oklch(0.598 0.208 9.9);
+  --chart-1: oklch(0.598 0.208 9.9);
+  --chart-2: oklch(0.487 0.162 352.6);
+  --chart-3: oklch(0.769 0.096 47.4);
+  --chart-4: oklch(0.401 0.104 339.4);
+  --chart-5: oklch(0.715 0.155 8.8);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.975 0.012 61);
+  --sidebar-foreground: oklch(0.27 0.057 347);
+  --sidebar-primary: oklch(0.487 0.162 352.6);
+  --sidebar-primary-foreground: oklch(0.995 0.003 68);
+  --sidebar-accent: oklch(0.944 0.02 63);
+  --sidebar-accent-foreground: oklch(0.34 0.08 350);
+  --sidebar-border: oklch(0.896 0.027 58);
+  --sidebar-ring: oklch(0.598 0.208 9.9);
+}
+
+/* Dark: the same three shades inverted — plum ink as the surface, sand as the
+   text, and a lightened cerise for actions (white on plain cerise is 4.44:1,
+   so the button lightens and takes dark text instead: 6.4:1). */
+.dark {
+  --background: oklch(0.223 0.045 345);
+  --foreground: oklch(0.931 0.026 55);
+  --card: oklch(0.258 0.052 352);
+  --card-foreground: oklch(0.931 0.026 55);
+  --popover: oklch(0.258 0.052 352);
+  --popover-foreground: oklch(0.931 0.026 55);
+  --primary: oklch(0.715 0.155 8.8);
+  --primary-foreground: oklch(0.223 0.045 345);
+  --secondary: oklch(0.315 0.058 352);
+  --secondary-foreground: oklch(0.931 0.026 55);
+  --muted: oklch(0.315 0.058 352);
+  --muted-foreground: oklch(0.78 0.04 36);
+  --accent: oklch(0.355 0.07 350);
+  --accent-foreground: oklch(0.931 0.026 55);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 12%);
+  --input: oklch(1 0 0 / 16%);
+  --ring: oklch(0.668 0.181 7.7);
+  --chart-1: oklch(0.715 0.155 8.8);
+  --chart-2: oklch(0.598 0.208 9.9);
+  --chart-3: oklch(0.769 0.096 47.4);
+  --chart-4: oklch(0.487 0.162 352.6);
+  --chart-5: oklch(0.885 0.046 55.3);
+  --sidebar: oklch(0.258 0.052 352);
+  --sidebar-foreground: oklch(0.931 0.026 55);
+  --sidebar-primary: oklch(0.715 0.155 8.8);
+  --sidebar-primary-foreground: oklch(0.223 0.045 345);
+  --sidebar-accent: oklch(0.355 0.07 350);
+  --sidebar-accent-foreground: oklch(0.931 0.026 55);
+  --sidebar-border: oklch(1 0 0 / 12%);
+  --sidebar-ring: oklch(0.668 0.181 7.7);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
   }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+    /* Inter ships an optical-size axis; SF does this switch natively. */
+    font-optical-sizing: auto;
+  }
+  /* SF tightens tracking as type gets larger — mirror that for headings. */
+  h1,
+  h2,
+  h3 {
+    letter-spacing: -0.017em;
+  }
 }

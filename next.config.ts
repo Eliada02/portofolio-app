@@ -1,7 +1,17 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Pin the workspace root to this project so Next doesn't pick up an
+  // unrelated lockfile from a parent directory.
+  turbopack: {
+    root: __dirname,
+  },
+  images: {
+    // Next 16 allowlists optimizer qualities and defaults to [75]; requesting
+    // anything outside the list 400s. Kept at hand for when a photo asset
+    // needs more than the default.
+    qualities: [75, 90],
+  },
 };
 
 export default nextConfig;
