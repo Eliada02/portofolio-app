@@ -1,23 +1,27 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useOS } from "@/lib/store";
 import { profile } from "@/lib/data";
-import { useClock, formatDate, formatTime } from "@/lib/useClock";
-import { ChevronRight, ChevronUp } from "lucide-react";
-import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { HelloMark, HELLO_DURATION } from "./HelloMark";
-import { Avatar } from "@/components/Avatar";
+import { AmbientBackdrop } from "./boot/AmbientBackdrop";
+import { AvatarOrbit } from "./boot/AvatarOrbit";
+import { BootLog } from "./boot/BootLog";
+import { LockMenuBar } from "./boot/LockMenuBar";
+import { TouchIdButton, type UnlockPhase } from "./boot/TouchIdButton";
 
 /** Beat between the last stroke landing and the screen lifting away. */
 const HOLD = 0.5;
+/** Time the unlocked state is held before the desktop takes over. */
+const HANDOFF_MS = 380;
 
 export function BootScreen() {
   const setBooted = useOS((s) => s.setBooted);
   const openApp = useOS((s) => s.openApp);
   const reduced = useReducedMotion();
   const [greeted, setGreeted] = useState(false);
-  const now = useClock();
+  const [phase, setPhase] = useState<UnlockPhase>("idle");
 
   useEffect(() => {
     const ms = reduced ? 900 : (HELLO_DURATION + HOLD) * 1000;
@@ -25,70 +29,65 @@ export function BootScreen() {
     return () => clearTimeout(t);
   }, [reduced]);
 
-  const enter = () => {
-    setBooted(true);
-    setTimeout(() => openApp("about"), 500);
-  };
+  const scan = useCallback(() => setPhase("scanning"), []);
+
+  /** Called when the sensor finishes reading. */
+  const unlock = useCallback(() => {
+    setPhase("unlocked");
+    setTimeout(() => {
+      setBooted(true);
+      setTimeout(() => openApp("about"), 400);
+    }, HANDOFF_MS);
+  }, [setBooted, openApp]);
+
+  // Enter / Space unlock too — a login screen that only takes a click is not
+  // reachable from a keyboard.
+  useEffect(() => {
+    if (!greeted || phase !== "idle") return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        scan();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [greeted, phase, scan]);
 
   return (
     <div className="fixed inset-0 z-10000 overflow-hidden">
-      {/* Login sits underneath from the start, so lifting the hello screen
-          reveals it already settled — the way macOS hands off after setup. */}
-      <div className="absolute inset-0 bg-linear-to-b from-[#4a1b33] via-[#2a1220] to-[#160a11]">
-        <div className="relative flex h-full flex-col items-center justify-center gap-5">
-          {/* Click-anywhere-to-enter, behind the content so the real button
-              still receives its own hover and clicks. */}
-          <button
-            onClick={enter}
-            className="absolute inset-0 z-0 cursor-default"
-            aria-label="Enter"
-            tabIndex={-1}
-          />
-          {/* iOS lock screen leads with the clock; macOS leads with the user
-              tile. Both are laid out in CSS so nothing flashes while a
-              media-query hook settles. */}
-          <div className="absolute inset-x-0 top-16 px-6 text-center md:hidden">
-            <p className="text-base font-medium text-white/80">
-              {formatDate(now)}
-            </p>
-            <p className="text-7xl font-semibold tabular-nums text-white">
-              {formatTime(now)}
-            </p>
-          </div>
+      {/* The lock screen sits underneath from the start, so lifting the hello
+          curtain reveals it already settled — as macOS does after setup. */}
+      <div className="absolute inset-0">
+        <AmbientBackdrop />
+        <LockMenuBar />
 
-          {/* `relative` on each foreground child keeps it painted above the
-              click-anywhere layer, which is a positioned z-0 sibling. */}
-          <Avatar className="relative size-24 rounded-full shadow-2xl ring-4 ring-white/20 sm:size-28" />
-          <div className="relative px-6 text-center">
-            <h1 className="text-xl font-semibold text-white sm:text-2xl">
+        {/* Click anywhere to begin the scan, behind the content so the sensor
+            still gets its own hover and clicks. */}
+        <button
+          type="button"
+          onClick={() => phase === "idle" && scan()}
+          className="absolute inset-0 z-0 cursor-default"
+          aria-label="Unlock"
+          tabIndex={-1}
+        />
+
+        <div className="relative flex h-full flex-col items-center justify-center gap-4 px-6">
+          <AvatarOrbit />
+
+          <div className="relative -mt-4 text-center">
+            <h1 className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">
               {profile.name}
             </h1>
-            <p className="text-sm text-white/60">{profile.role}</p>
+            <p className="mt-0.5 text-sm text-white/60">{profile.role}</p>
           </div>
 
-          <button
-            onClick={enter}
-            className="group relative mt-2 inline-flex items-center gap-2 rounded-full bg-white/15 px-6 py-3 font-medium text-white backdrop-blur-md transition hover:bg-white/25"
-          >
-            Enter portfolio
-            <ChevronRight className="size-4 transition group-hover:translate-x-0.5" />
-          </button>
-
-          {/* Swipe-up affordance on phones, click hint on desktop. */}
-          <div className="absolute inset-x-0 bottom-8 flex flex-col items-center gap-2 px-6 md:hidden">
-            <motion.div
-              animate={{ y: [0, -6, 0] }}
-              transition={{ duration: 1.8, repeat: Infinity }}
-            >
-              <ChevronUp className="size-5 text-white/50" />
-            </motion.div>
-            <span className="text-xs text-white/50">Swipe up to open</span>
-            <span className="h-1 w-32 rounded-full bg-white/70" />
+          <div className="relative mt-2">
+            <TouchIdButton phase={phase} onScan={scan} onComplete={unlock} />
           </div>
-          <p className="absolute bottom-10 hidden px-6 text-center text-xs text-white/40 md:block">
-            Press the button or click anywhere to continue
-          </p>
         </div>
+
+        <BootLog />
       </div>
 
       <AnimatePresence>

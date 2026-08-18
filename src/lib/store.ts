@@ -41,6 +41,13 @@ type Store = {
    */
   iconOffsets: Record<string, { x: number; y: number }>;
   setIconOffset: (id: string, x: number, y: number) => void;
+  /**
+   * Phone home-screen app order. `null` means "never rearranged", so the
+   * launcher falls back to the registry order rather than this store having
+   * to import the app list and create a cycle.
+   */
+  homeOrder: AppId[] | null;
+  setHomeOrder: (order: AppId[]) => void;
   setWifi: (v: boolean) => void;
   setBluetooth: (v: boolean) => void;
   setBrightness: (v: number) => void;
@@ -125,6 +132,8 @@ export const useOS = create<Store>((set, get) => ({
   iconOffsets: {},
   setIconOffset: (id, x, y) =>
     set({ iconOffsets: { ...get().iconOffsets, [id]: { x, y } } }),
+  homeOrder: null,
+  setHomeOrder: (order) => set({ homeOrder: order }),
   setWifi: (v) => set({ wifi: v }),
   setBluetooth: (v) => set({ bluetooth: v }),
   setBrightness: (v) => set({ brightness: Math.min(1, Math.max(0.4, v)) }),
