@@ -146,3 +146,35 @@ export function WhatsAppArt() {
     </svg>
   );
 }
+
+/**
+ * A Markdown document. Painted on transparency and rendered unclipped, like
+ * the folder — a file has its own page silhouette, not an app tile.
+ */
+export function MarkdownFileArt() {
+  return (
+    <svg viewBox="0 0 100 100" className="size-full" aria-hidden>
+      <defs>
+        <linearGradient id="tool-md-page" x1="0" y1="0" x2="0.3" y2="1">
+          <stop offset="0" stopColor="#FFFFFF" />
+          <stop offset="1" stopColor="#E7E2DC" />
+        </linearGradient>
+      </defs>
+      {/* Page with the corner turned down. */}
+      <path
+        d="M18 8h40l24 24v56a6 6 0 0 1-6 6H18a6 6 0 0 1-6-6V14a6 6 0 0 1 6-6z"
+        fill="url(#tool-md-page)"
+      />
+      <path d="M58 8l24 24H64a6 6 0 0 1-6-6z" fill="#C9C2B9" />
+      {/* Ruled lines, with the top one short like a heading. */}
+      <g fill="#B9B2A9">
+        <rect x="24" y="44" width="30" height="5" rx="2.5" />
+        <rect x="24" y="56" width="46" height="4" rx="2" />
+        <rect x="24" y="66" width="46" height="4" rx="2" />
+        <rect x="24" y="76" width="32" height="4" rx="2" />
+      </g>
+      {/* The cerise tab that marks it as the one to read first. */}
+      <rect x="12" y="40" width="6" height="26" rx="3" fill="#DE3163" />
+    </svg>
+  );
+}

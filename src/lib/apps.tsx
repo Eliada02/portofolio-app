@@ -7,6 +7,7 @@ import { ContactApp } from "@/components/apps/ContactApp";
 import { TerminalApp } from "@/components/apps/TerminalApp";
 import { CodeApp } from "@/components/apps/CodeApp";
 import { DesignApp } from "@/components/apps/DesignApp";
+import { WelcomeApp } from "@/components/apps/WelcomeApp";
 import {
   ContactsArt,
   FinderArt,
@@ -15,7 +16,11 @@ import {
   MailArt,
   TerminalArt,
 } from "@/components/os/MacIcons";
-import { VSCodeArt, FigmaArt } from "@/components/os/ToolIcons";
+import {
+  VSCodeArt,
+  FigmaArt,
+  MarkdownFileArt,
+} from "@/components/os/ToolIcons";
 
 export type AppMeta = {
   id: AppId;
@@ -32,6 +37,15 @@ export type AppMeta = {
 // Each app borrows the macOS icon whose job is closest to its own, so the
 // dock reads like a real Mac dock at a glance.
 export const APPS: AppMeta[] = [
+  // First in the list so it leads the phone launcher and the Help menu — it
+  // is the thing a first-time visitor should open before anything else.
+  {
+    id: "welcome",
+    name: "START HERE",
+    Art: MarkdownFileArt,
+    Component: WelcomeApp,
+    showInDock: false,
+  },
   {
     id: "about",
     name: "About Me",

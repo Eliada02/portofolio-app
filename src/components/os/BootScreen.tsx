@@ -36,7 +36,7 @@ export function BootScreen() {
     setPhase("unlocked");
     setTimeout(() => {
       setBooted(true);
-      setTimeout(() => openApp("about"), 400);
+      setTimeout(() => openApp("welcome"), 400);
     }, HANDOFF_MS);
   }, [setBooted, openApp]);
 
@@ -79,7 +79,12 @@ export function BootScreen() {
             <h1 className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">
               {profile.name}
             </h1>
-            <p className="mt-0.5 text-sm text-white/60">{profile.role}</p>
+            <p className="mt-1 max-w-md text-balance text-sm text-white/70">
+              {profile.headline}
+            </p>
+            <span className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[11px] font-medium text-white/80 backdrop-blur-md">
+              Interactive macOS Portfolio — unlock to explore
+            </span>
           </div>
 
           <div className="relative mt-2">

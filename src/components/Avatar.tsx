@@ -1,4 +1,6 @@
+import Image from "next/image";
 import { useId } from "react";
+import { profile } from "@/lib/data";
 
 /**
  * The developer avatar, drawn to match `public/avatar-1.avif`.
@@ -61,7 +63,44 @@ const HAIR_FRINGE: [number, number, number][] = [
   [46, 27, 7.5], [58, 24.5, 8], [70, 27, 7.5], [78, 34, 7], [42, 34, 7],
 ];
 
-export function Avatar({ className = "size-24" }: { className?: string }) {
+export interface AvatarProps {
+  className?: string;
+  /**
+   * Overrides `profile.photo`. Pass `null` to force the drawn portrait even
+   * when a photo is configured.
+   */
+  photo?: string | null;
+}
+
+/**
+ * Renders `profile.photo` when one is set, and the drawn portrait otherwise.
+ * Both fill the same round frame, so every caller keeps its own sizing and
+ * ring and nothing else has to change when a photo is added.
+ */
+export function Avatar({ className = "size-24", photo }: AvatarProps) {
+  const src = photo === undefined ? profile.photo : photo;
+
+  if (src) {
+    return (
+      <span className={`relative block overflow-hidden ${className}`}>
+        <Image
+          src={src}
+          alt={`Portrait of ${profile.name}`}
+          fill
+          // Covers the 128px frame at 2x on retina without over-fetching.
+          sizes="256px"
+          className="object-cover"
+          style={{ objectPosition: profile.photoPosition }}
+          priority
+        />
+      </span>
+    );
+  }
+
+  return <DrawnPortrait className={className} />;
+}
+
+function DrawnPortrait({ className }: { className: string }) {
   const uid = useId().replace(/:/g, "");
   const id = (name: string) => `avatar-${uid}-${name}`;
 

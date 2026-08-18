@@ -7,6 +7,7 @@ import {
   GitHubArt,
   FolderArt,
   WhatsAppArt,
+  MarkdownFileArt,
 } from "@/components/os/ToolIcons";
 
 /**
@@ -37,6 +38,15 @@ const githubUrl =
   "https://github.com";
 
 export const DESKTOP_ITEMS: DesktopItem[] = [
+  {
+    // Top of the stack, and a document rather than a tile, so it reads as
+    // "open me first" instead of as one more app.
+    id: "start-here",
+    label: "START HERE.md",
+    Art: MarkdownFileArt,
+    shape: "free",
+    target: { app: "welcome" },
+  },
   {
     id: "vscode",
     label: "VS Code",

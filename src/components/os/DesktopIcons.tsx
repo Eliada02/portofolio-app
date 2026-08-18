@@ -118,7 +118,7 @@ function Icon({
       }
       whileTap={{ scale: 0.94 }}
       whileDrag={{ scale: 1.06, zIndex: 5 }}
-      className="group absolute flex w-20 cursor-default touch-none flex-col items-center gap-1 rounded-lg p-1.5 outline-none"
+      className="group absolute flex w-20 cursor-default touch-none flex-col items-center gap-1 rounded-lg p-1.5 outline-none transition-colors hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-white/80"
     >
       {/* Selection wash. A shared layoutId slides it between icons rather
           than cross-fading, which is what Finder does. */}

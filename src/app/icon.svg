@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!--
+    Tab icon: the avatar reduced to what still reads at 16px.
+    The full portrait's coils, lashes and lip shading turn to mush at favicon
+    size, so this keeps only the three things that identify her — the afro
+    silhouette, the warm face, and the dark bar of the glasses.
+  -->
+  <defs>
+    <linearGradient id="fav-bg" x1="0" y1="0" x2="0.4" y2="1">
+      <stop offset="0" stop-color="#DE3163"/>
+      <stop offset="1" stop-color="#7A1F4C"/>
+    </linearGradient>
+    <linearGradient id="fav-hair" x1="0.2" y1="0" x2="0.9" y2="1">
+      <stop offset="0" stop-color="#4A1310"/>
+      <stop offset="1" stop-color="#250707"/>
+    </linearGradient>
+    <linearGradient id="fav-skin" x1="0.2" y1="0" x2="0.9" y2="1">
+      <stop offset="0" stop-color="#F79447"/>
+      <stop offset="1" stop-color="#E06A25"/>
+    </linearGradient>
+    <clipPath id="fav-clip">
+      <rect width="64" height="64" rx="14"/>
+    </clipPath>
+  </defs>
+
+  <g clip-path="url(#fav-clip)">
+    <rect width="64" height="64" fill="url(#fav-bg)"/>
+
+    <!-- Shoulders -->
+    <path d="M7 64c1-10 11-16 25-16s24 6 25 16z" fill="#F8A828"/>
+
+    <!-- Afro: one mass with a bumped outline, not individual coils. -->
+    <g fill="url(#fav-hair)">
+      <circle cx="32" cy="25" r="19"/>
+      <circle cx="17" cy="24" r="11"/>
+      <circle cx="47" cy="24" r="11"/>
+      <circle cx="15" cy="35" r="9"/>
+      <circle cx="49" cy="35" r="9"/>
+      <circle cx="23" cy="12" r="9.5"/>
+      <circle cx="41" cy="12" r="9.5"/>
+    </g>
+
+    <!-- Face -->
+    <path d="M19 29c0-8.5 5.6-14 13-14s13 5.5 13 14v4.5c0 9-5.6 15-13 15s-13-6-13-15z" fill="url(#fav-skin)"/>
+
+    <!-- Glasses: at 16px this is the one detail that survives, so it is drawn
+         heavy enough to still register as eyewear rather than as noise. -->
+    <g fill="none" stroke="#1E0C0C" stroke-width="3.4">
+      <rect x="17.5" y="25" width="14" height="11" rx="5.5"/>
+      <rect x="32.5" y="25" width="14" height="11" rx="5.5"/>
+      <path d="M31.5 30.5h1"/>
+    </g>
+
+    <!-- Smile -->
+    <path d="M27 42.5c1.7 2.6 8.6 2.6 10.3 0" fill="none" stroke="#7A2418" stroke-width="2.6" stroke-linecap="round"/>
+  </g>
+</svg>

@@ -6,6 +6,7 @@ import { useIsMobile } from "@/lib/useMediaQuery";
 import { MenuBar } from "./MenuBar";
 import { SquircleDefs } from "./AppIcon";
 import { DesktopIcons } from "./DesktopIcons";
+import { FirstRunTip } from "./FirstRunTip";
 import { Dock } from "./Dock";
 import { Window } from "./Window";
 import { BootScreen } from "./BootScreen";
@@ -98,6 +99,7 @@ function DesktopShell() {
       </AnimatePresence>
 
       <Dock />
+      <FirstRunTip />
     </>
   );
 }

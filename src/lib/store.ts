@@ -10,7 +10,8 @@ export type AppId =
   | "contact"
   | "terminal"
   | "code"
-  | "design";
+  | "design"
+  | "welcome";
 
 export type WindowState = {
   id: AppId;
@@ -82,6 +83,7 @@ const DEFAULT_SIZE: Record<AppId, { width: number; height: number }> = {
   terminal: { width: 680, height: 440 },
   code: { width: 900, height: 600 },
   design: { width: 880, height: 580 },
+  welcome: { width: 620, height: 560 },
 };
 
 /** Space reserved for the menu bar (top) and the dock (bottom). */

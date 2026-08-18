@@ -10,8 +10,24 @@ export const profile = {
   location: "Tirana, Albania",
   email: "eliada.salla@outlook.com",
   phone: "+355 69 340 6752",
-  avatar: "/avatar.svg",
+  /**
+   * A real photo for the avatar, as a path under public/ — e.g.
+   * "/avatar.jpg". Leave undefined and the drawn SVG portrait is used
+   * instead. Supply at least 512x512, square and centred on the face:
+   * it renders up to 128px, which is 256px on a retina display.
+   */
+  photo: undefined as string | undefined,
+  /** CSS object-position for the photo, if the face isn't dead centre. */
+  photoPosition: "center 30%",
   tagline: "Full-stack developer shipping end-to-end web products.",
+  /** The one-line value proposition, used as the hero headline. */
+  headline:
+    "Full-Stack Software Engineer building scalable, high-performance web products.",
+  /**
+   * Path to a CV under public/, e.g. "/eliada-salla-cv.pdf". While this is
+   * undefined the Download CV action is hidden rather than shipped broken.
+   */
+  resume: undefined as string | undefined,
   bio: [
     "Hi — I'm Eliada, a full-stack developer with 3+ years of experience and a Computer Science degree from the University of New York, Tirana. I build web applications with React, Next.js and TypeScript on the front end, and Node.js, NestJS and PostgreSQL behind them.",
     "I care about REST APIs that are pleasant to consume, reusable component architecture, and Docker-based deployments that behave the same everywhere. This portfolio is built as a small macOS desktop — open the apps in the dock to explore my work.",
@@ -51,6 +67,9 @@ export type Project = {
   screenshot?: string;
   /** Describes the screenshot for screen readers. Required alongside one. */
   screenshotAlt?: string;
+  /** One line on what the project actually solves, and how. */
+  problem?: string;
+  solution?: string;
 };
 
 // TODO: add named client / personal projects here — the CV documents the work
@@ -67,6 +86,10 @@ export const projects: Project[] = [
     repo: "https://github.com/Eliada02",
     accent: "from-brand-cerise to-brand-magenta",
     featured: true,
+    problem:
+      "A CV is skimmed in fifteen seconds and says nothing about how someone builds.",
+    solution:
+      "An operating system you can actually use, so exploring it is the demonstration.",
   },
   {
     id: "freelance-client-apps",
@@ -77,6 +100,10 @@ export const projects: Project[] = [
       "Freelance work covering the complete lifecycle: requirements gathering, architecture, development and Dockerized deployment, plus post-launch support. React/Next.js frontends in TypeScript, NestJS REST APIs documented with Swagger, and PostgreSQL for relational data.",
     tags: ["Next.js", "NestJS", "PostgreSQL", "Docker"],
     accent: "from-brand-magenta to-brand-ink",
+    problem:
+      "Clients needed a finished product, not a front end handed over to someone else.",
+    solution:
+      "End-to-end delivery: requirements, architecture, build, Dockerised deploy and support.",
   },
   {
     id: "expense-tracker",
@@ -87,6 +114,8 @@ export const projects: Project[] = [
       "A full-stack expense tracker built during a 150-hour internship at Albania Lab. Handled the React front end and integrated it with an Express and Node.js API backed by MongoDB, covering authentication, CRUD for transactions and category-based summaries.",
     tags: ["React", "Node.js", "Express.js", "MongoDB"],
     accent: "from-brand-sand to-brand-cerise",
+    problem: "Tracking personal spending across categories without living in a spreadsheet.",
+    solution: "A MERN app with authentication, transaction CRUD and category summaries.",
   },
 ];
 

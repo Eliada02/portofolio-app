@@ -5,6 +5,8 @@ import { BookUser, Link2, MapPin, UserRound } from "lucide-react";
 import { profile, education, skills } from "@/lib/data";
 import { SocialIcon } from "@/components/BrandIcon";
 import { Avatar } from "@/components/Avatar";
+import { HeroActions } from "@/components/HeroActions";
+import { Sparkles } from "lucide-react";
 import { socialHref, socialTarget } from "@/lib/contact";
 import { SplitView, type SplitViewSection } from "@/components/os/SplitView";
 
@@ -22,7 +24,7 @@ const SECTIONS: SplitViewSection[] = [
 function Overview() {
   // A short, honest summary of the stack, pulled from the same source the
   // Skills app uses so the two can't drift apart.
-  const headline = skills
+  const stackLine = skills
     .find((g) => g.category === "Frontend")
     ?.items.slice(0, 4)
     .join(" · ");
@@ -47,13 +49,21 @@ function Overview() {
           <MapPin className="size-3.5 shrink-0" /> {profile.location}
         </div>
 
-        <p className="mt-5 text-balance text-base font-medium @sm:text-lg">
-          {profile.tagline}
+        {/* Purpose pill, so the OS metaphor is named rather than guessed at. */}
+        <span className="mt-5 inline-flex items-center gap-1.5 rounded-full bg-primary/12 px-2.5 py-1 text-[11px] font-semibold text-primary">
+          <Sparkles className="size-3" />
+          Interactive macOS Portfolio
+        </span>
+
+        <p className="mt-3 text-balance text-base font-semibold @sm:text-lg">
+          {profile.headline}
         </p>
 
-        {headline && (
-          <p className="mt-2 text-sm text-muted-foreground">{headline}</p>
+        {stackLine && (
+          <p className="mt-2 text-sm text-muted-foreground">{stackLine}</p>
         )}
+
+        <HeroActions className="mt-5" />
       </div>
     </div>
   );

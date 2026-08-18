@@ -84,10 +84,10 @@ function ProjectActions({
           target="_blank"
           rel="noreferrer"
           onClick={stop}
-          aria-label={`Open the live demo of ${project.name} in a new tab`}
+          aria-label={`Live preview of ${project.name} — opens in a new tab`}
           className={`inline-flex items-center gap-1.5 rounded-lg bg-primary font-medium text-primary-foreground transition hover:opacity-90 ${padding}`}
         >
-          Live Demo <ArrowUpRight className="size-3.5" />
+          Live Preview <ArrowUpRight className="size-3.5" />
         </a>
       )}
       {project.repo && (
@@ -96,10 +96,11 @@ function ProjectActions({
           target="_blank"
           rel="noreferrer"
           onClick={stop}
-          aria-label={`View the source of ${project.name} on GitHub in a new tab`}
+          aria-label={`Source code for ${project.name} on GitHub — opens in a new tab`}
           className={`inline-flex items-center gap-1.5 rounded-lg border border-border bg-card font-medium transition hover:bg-secondary ${padding}`}
         >
-          <BrandIcon label="GitHub" className="size-3.5" /> Code
+          <BrandIcon label="GitHub" className="size-3.5" /> Source Code{" "}
+          <ArrowUpRight className="size-3.5 opacity-70" />
         </a>
       )}
     </div>
@@ -165,6 +166,31 @@ function ProjectCard({
           <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
             {project.summary}
           </p>
+
+          {(project.problem || project.solution) && (
+            <dl className="mt-3 space-y-1.5 border-l-2 border-primary/25 pl-2.5 text-xs leading-snug">
+              {project.problem && (
+                <div>
+                  <dt className="inline font-semibold text-foreground/70">
+                    Problem:{" "}
+                  </dt>
+                  <dd className="inline text-muted-foreground">
+                    {project.problem}
+                  </dd>
+                </div>
+              )}
+              {project.solution && (
+                <div>
+                  <dt className="inline font-semibold text-foreground/70">
+                    Solution:{" "}
+                  </dt>
+                  <dd className="inline text-muted-foreground">
+                    {project.solution}
+                  </dd>
+                </div>
+              )}
+            </dl>
+          )}
 
           <div className="mt-3 flex flex-wrap items-center gap-1.5">
             {project.tags.map((tag) => (
