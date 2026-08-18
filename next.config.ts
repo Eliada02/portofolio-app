@@ -1,6 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Emit a fully static site into out/ at build time. The app is a single
+  // route of client components with no server work, so there is nothing for a
+  // Node runtime to do — this lets any static host (Netlify) serve it directly.
+  output: "export",
   // Pin the workspace root to this project so Next doesn't pick up an
   // unrelated lockfile from a parent directory.
   turbopack: {

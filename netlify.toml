@@ -1,0 +1,10 @@
+# Netlify build settings for a Next.js static export.
+# `next build` with `output: "export"` writes the finished site to out/.
+
+[build]
+  command = "npm run build"
+  publish = "out"
+
+[build.environment]
+  # Match the local toolchain; Next 16 requires Node >= 20.9.
+  NODE_VERSION = "22"
