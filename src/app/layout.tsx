@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Geist_Mono } from "next/font/google";
+import { THEME_INIT_SCRIPT } from "@/lib/theme";
 import "./globals.css";
 
 // Apple's San Francisco can't be shipped as a webfont. On Apple devices the
@@ -28,6 +29,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   // Draw behind the notch / home indicator; the dock pads for the safe area.
   viewportFit: "cover",
+  // Kept in sync with the appearance by the theme store.
   themeColor: "#2a1220",
 };
 
@@ -37,11 +39,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+    // The inline script below mutates `class` and `style` on <html> before
+    // React hydrates, so the server markup can't match by definition.
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${inter.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="h-full overflow-hidden overscroll-none bg-[#2a1220]">
+      <head>
+        {/* Must run before first paint — see lib/theme.ts. */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+      </head>
+      <body className="bg-wallpaper-base h-full overflow-hidden overscroll-none">
         {children}
       </body>
     </html>

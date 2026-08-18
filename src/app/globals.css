@@ -12,6 +12,8 @@
   --color-brand-sand: var(--brand-sand);
   --color-brand-cerise: var(--brand-cerise);
   --color-brand-ink: var(--brand-ink);
+  /* The desk surface behind everything — flips with the appearance. */
+  --color-wallpaper-base: var(--wallpaper-base);
   /* macOS-first UI stack. `-apple-system` / `BlinkMacSystemFont` resolve to
      the real San Francisco on Apple platforms; every other OS falls through
      to the Inter webfont, which matches SF Pro closely. */
@@ -173,5 +175,150 @@
   h2,
   h3 {
     letter-spacing: -0.017em;
+  }
+}
+/* ---------------------------------------------------------------------------
+   SEQUOIA MATERIALS
+
+   macOS doesn't have "a blur" — it has a small set of named materials, each a
+   fixed tint + blur + saturation pairing. Saturation is the part people skip:
+   a plain `backdrop-blur` over a colourful desktop turns muddy grey, because
+   blurring averages hues toward the mean. Boosting saturation past 100% is
+   what keeps the wallpaper's colour alive through the glass.
+
+   Each material sets its own tint per appearance, so callers just pick a
+   thickness and never hand-write `bg-white/x dark:bg-black/y` again.
+--------------------------------------------------------------------------- */
+
+:root {
+  --wallpaper-base: #f7ece4;
+  /* Tints are deliberately warm — a neutral white over these pinks reads grey. */
+  --material-tint: 255 251 249;
+  --material-shade: 42 18 32;
+  --rim-top: 255 255 255;
+  --rim-top-opacity: 0.65;
+  --rim-bottom-opacity: 0.1;
+}
+
+.dark {
+  --wallpaper-base: #2a1220;
+  --material-tint: 255 240 248;
+  --material-shade: 12 4 9;
+  --rim-top-opacity: 0.22;
+  --rim-bottom-opacity: 0.04;
+}
+
+/** The four named thicknesses, so components read as HIG rather than numbers. */
+@utility material-ultrathin {
+  --material-blur: 20px;
+  background-color: rgb(var(--material-tint) / 0.5);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(20px) saturate(180%);
+}
+@utility material-thin {
+  --material-blur: 28px;
+  background-color: rgb(var(--material-tint) / 0.68);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  backdrop-filter: blur(28px) saturate(180%);
+}
+@utility material-regular {
+  --material-blur: 32px;
+  background-color: rgb(var(--material-tint) / 0.8);
+  -webkit-backdrop-filter: blur(32px) saturate(190%);
+  backdrop-filter: blur(32px) saturate(190%);
+}
+@utility material-thick {
+  --material-blur: 40px;
+  background-color: rgb(var(--material-tint) / 0.92);
+  -webkit-backdrop-filter: blur(40px) saturate(200%);
+  backdrop-filter: blur(40px) saturate(200%);
+}
+
+.dark .material-ultrathin {
+  background-color: rgb(var(--material-shade) / 0.42);
+}
+.dark .material-thin {
+  background-color: rgb(var(--material-shade) / 0.58);
+}
+.dark .material-regular {
+  background-color: rgb(var(--material-shade) / 0.72);
+}
+.dark .material-thick {
+  background-color: rgb(var(--material-shade) / 0.88);
+}
+
+/* ---------------------------------------------------------------------------
+   RIM STROKE
+
+   A floating macOS panel is lit from above: its top edge catches a bright
+   1px highlight that fades away by the bottom. A plain `border` can't do
+   that — a border is one flat colour on all four sides. This paints a
+   gradient into a 1px ring using a mask, so the highlight can fall off.
+--------------------------------------------------------------------------- */
+@utility rim {
+  /* Caller supplies the positioning context (every user of this is already
+     relative or absolute) — declaring it here would fight `absolute`. */
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      to bottom,
+      rgb(var(--rim-top) / var(--rim-top-opacity)) 0%,
+      rgb(var(--rim-top) / calc(var(--rim-top-opacity) * 0.35)) 28%,
+      rgb(var(--rim-top) / var(--rim-bottom-opacity)) 100%
+    );
+    /* Punch out the middle so only the 1px padding band paints. */
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    pointer-events: none;
+    /* Above any chrome the panel stacks inside it — a window title bar sits
+       at z-10, and it would otherwise paint over the top highlight, which is
+       the one part of the rim that carries the lighting. */
+    z-index: 30;
+  }
+}
+
+/** Ambient elevation — wide, soft and low-opacity, the way macOS floats panels. */
+@utility elevate-window {
+  box-shadow:
+    0 0 0 0.5px rgb(0 0 0 / 0.16),
+    0 12px 24px -8px rgb(0 0 0 / 0.18),
+    0 32px 64px -16px rgb(0 0 0 / 0.28);
+}
+@utility elevate-panel {
+  box-shadow:
+    0 0 0 0.5px rgb(0 0 0 / 0.12),
+    0 8px 16px -6px rgb(0 0 0 / 0.14),
+    0 20px 40px -12px rgb(0 0 0 / 0.22);
+}
+
+@layer base {
+  /* Windows and panels scroll a lot; macOS overlay scrollbars stay out of
+     the way until used. */
+  @supports (scrollbar-width: thin) {
+    .scroll-overlay {
+      scrollbar-width: thin;
+      scrollbar-color: rgb(var(--material-shade) / 0.28) transparent;
+    }
+  }
+
+  /* Everything that animates position/size should respect the OS setting. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 }

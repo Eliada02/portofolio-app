@@ -30,10 +30,10 @@ export function BootScreen() {
   };
 
   return (
-    <div className="fixed inset-0 z-[10000] overflow-hidden">
+    <div className="fixed inset-0 z-10000 overflow-hidden">
       {/* Login sits underneath from the start, so lifting the hello screen
           reveals it already settled — the way macOS hands off after setup. */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#4a1b33] via-[#2a1220] to-[#160a11]">
+      <div className="absolute inset-0 bg-linear-to-b from-[#4a1b33] via-[#2a1220] to-[#160a11]">
         <div className="relative flex h-full flex-col items-center justify-center gap-5">
           {/* Click-anywhere-to-enter, behind the content so the real button
               still receives its own hover and clicks. */}
@@ -57,7 +57,7 @@ export function BootScreen() {
 
           {/* `relative` on each foreground child keeps it painted above the
               click-anywhere layer, which is a positioned z-0 sibling. */}
-          <div className="relative grid size-24 place-items-center rounded-full bg-gradient-to-br from-brand-cerise to-brand-magenta text-3xl font-semibold text-white shadow-2xl ring-4 ring-white/20 sm:size-28 sm:text-4xl">
+          <div className="relative grid size-24 place-items-center rounded-full bg-linear-to-br from-brand-cerise to-brand-magenta text-3xl font-semibold text-white shadow-2xl ring-4 ring-white/20 sm:size-28 sm:text-4xl">
             {profile.name
               .split(" ")
               .map((n) => n[0])

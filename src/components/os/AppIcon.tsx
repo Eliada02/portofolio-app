@@ -58,7 +58,7 @@ export function AppIcon({
         <Art />
         {/* Top gloss — Apple's icons catch light across the upper half. Kept
             light so it reads as lighting, not as the old glassy iOS dome. */}
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/14 to-transparent" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-1/2 bg-linear-to-b from-white/14 to-transparent" />
         {/* Inner rim: bright hairline on top, dark one at the bottom. */}
         <div className="pointer-events-none absolute inset-0 shadow-[inset_0_1px_0_rgba(255,255,255,0.4),inset_0_-1px_0_rgba(0,0,0,0.18)]" />
       </div>

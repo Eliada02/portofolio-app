@@ -1,78 +1,116 @@
 "use client";
 
-import { experience, courses, education, type Experience } from "@/lib/data";
-import { Briefcase, GraduationCap, BookOpen } from "lucide-react";
+import { useState } from "react";
+import { Briefcase, GraduationCap, BookOpen, MapPin } from "lucide-react";
+import {
+  experience,
+  courses,
+  education,
+  type Experience,
+} from "@/lib/data";
+import { SplitView, type SplitViewSection } from "@/components/os/SplitView";
 
-function Timeline({ entries }: { entries: Experience[] }) {
+/** Stable ids: the sidebar and the detail pane both key off these. */
+const roleId = (prefix: string, index: number) => `${prefix}-${index}`;
+
+const SECTIONS: SplitViewSection[] = [
+  {
+    title: "Experience",
+    items: experience.map((entry, i) => ({
+      id: roleId("job", i),
+      label: entry.role,
+      detail: `${entry.company} · ${entry.period}`,
+      icon: <Briefcase className="size-4" />,
+    })),
+  },
+  {
+    title: "Courses",
+    items: courses.map((entry, i) => ({
+      id: roleId("course", i),
+      label: entry.role,
+      detail: `${entry.company} · ${entry.period}`,
+      icon: <BookOpen className="size-4" />,
+    })),
+  },
+  {
+    title: "Education",
+    items: education.map((entry, i) => ({
+      id: roleId("edu", i),
+      label: entry.school,
+      detail: entry.period,
+      icon: <GraduationCap className="size-4" />,
+    })),
+  },
+];
+
+const BY_ID: Record<string, Experience> = {
+  ...Object.fromEntries(experience.map((e, i) => [roleId("job", i), e])),
+  ...Object.fromEntries(courses.map((e, i) => [roleId("course", i), e])),
+  // Education has a different shape; normalise it into the same detail view.
+  ...Object.fromEntries(
+    education.map((e, i) => [
+      roleId("edu", i),
+      {
+        role: e.degree,
+        company: e.school,
+        period: e.period,
+        location: "",
+        points: [],
+      } satisfies Experience,
+    ])
+  ),
+};
+
+function Detail({ entry }: { entry: Experience }) {
   return (
-    <div className="mt-6 space-y-6 border-l border-border pl-5 @sm:pl-6">
-      {entries.map((e, i) => (
-        <div key={i} className="relative">
-          <span className="absolute -left-[23px] top-1.5 size-2.5 rounded-full bg-primary ring-4 ring-background @sm:-left-[27px]" />
-          <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-            <h3 className="font-semibold">
-              {e.role}{" "}
-              <span className="font-normal text-muted-foreground">
-                · {e.company}
-              </span>
-            </h3>
-            <span className="text-xs text-muted-foreground">{e.period}</span>
-          </div>
-          <p className="text-xs text-muted-foreground">{e.location}</p>
-          <ul className="mt-2 space-y-1.5">
-            {e.points.map((p, j) => (
-              <li
-                key={j}
-                className="flex gap-2 text-sm leading-relaxed text-muted-foreground"
-              >
-                <span className="mt-2 size-1 shrink-0 rounded-full bg-current opacity-40" />
-                {p}
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
-    </div>
+    <article className="p-5 @sm:p-7">
+      <p className="text-xs font-semibold uppercase tracking-wide text-primary">
+        {entry.period}
+      </p>
+      <h1 className="mt-1 text-xl font-semibold tracking-tight @sm:text-2xl">
+        {entry.role}
+      </h1>
+      <p className="mt-0.5 text-base text-muted-foreground">{entry.company}</p>
+
+      {entry.location && (
+        <p className="mt-2 flex items-center gap-1.5 text-sm text-muted-foreground">
+          <MapPin className="size-3.5 shrink-0" />
+          {entry.location}
+        </p>
+      )}
+
+      {entry.points.length > 0 && (
+        <ul className="mt-5 space-y-2.5 border-t border-border pt-5">
+          {entry.points.map((point, i) => (
+            <li
+              key={i}
+              className="flex gap-2.5 text-sm leading-relaxed text-muted-foreground"
+            >
+              <span
+                aria-hidden
+                className="mt-2 size-1.5 shrink-0 rounded-full bg-primary/60"
+              />
+              {point}
+            </li>
+          ))}
+        </ul>
+      )}
+    </article>
   );
 }
 
 export function ExperienceApp() {
+  const [selected, setSelected] = useState(roleId("job", 0));
+  const entry = BY_ID[selected];
+
   return (
-    <div className="h-full overflow-y-auto p-4 @sm:p-6">
-      <div className="flex items-center gap-2">
-        <Briefcase className="size-5 shrink-0 text-muted-foreground" />
-        <h1 className="text-lg font-semibold tracking-tight @sm:text-xl">
-          Experience
-        </h1>
-      </div>
-
-      <Timeline entries={experience} />
-
-      <div className="mt-8 flex items-center gap-2">
-        <BookOpen className="size-5 text-muted-foreground" />
-        <h2 className="text-lg font-semibold tracking-tight">Courses</h2>
-      </div>
-
-      <Timeline entries={courses} />
-
-      <div className="mt-8 flex items-center gap-2">
-        <GraduationCap className="size-5 text-muted-foreground" />
-        <h2 className="text-lg font-semibold tracking-tight">Education</h2>
-      </div>
-      <div className="mt-3 space-y-2">
-        {education.map((ed, i) => (
-          <div
-            key={i}
-            className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 rounded-lg border border-border bg-card px-4 py-3"
-          >
-            <div className="min-w-0">
-              <p className="font-medium">{ed.degree}</p>
-              <p className="text-sm text-muted-foreground">{ed.school}</p>
-            </div>
-            <span className="text-xs text-muted-foreground">{ed.period}</span>
-          </div>
-        ))}
-      </div>
-    </div>
+    <SplitView
+      label="Roles and education"
+      sections={SECTIONS}
+      selectedId={selected}
+      onSelect={setSelected}
+    >
+      {entry && <Detail entry={entry} />}
+    </SplitView>
   );
 }

@@ -27,6 +27,15 @@ type Store = {
   booted: boolean;
   setBooted: (v: boolean) => void;
 
+  // --- system state, surfaced through Control Center ---------------------
+  wifi: boolean;
+  bluetooth: boolean;
+  /** 0.4–1. Multiplies wallpaper luminance, like a real display slider. */
+  brightness: number;
+  setWifi: (v: boolean) => void;
+  setBluetooth: (v: boolean) => void;
+  setBrightness: (v: number) => void;
+
   windows: WindowState[];
   topZ: number;
 
@@ -38,7 +47,12 @@ type Store = {
   minimizeAll: () => void;
   toggleMaximize: (id: AppId, bounds: { w: number; h: number }) => void;
   moveWindow: (id: AppId, x: number, y: number) => void;
-  resizeWindow: (id: AppId, width: number, height: number) => void;
+  /** Commit a resize gesture. Leading edges move the origin too, so this
+   *  takes the whole rect rather than just a size. */
+  resizeWindow: (
+    id: AppId,
+    geometry: { x: number; y: number; width: number; height: number }
+  ) => void;
   /** Re-fit every window after a viewport resize / orientation change. */
   syncViewport: (vw: number, vh: number) => void;
 };
@@ -53,8 +67,8 @@ const DEFAULT_SIZE: Record<AppId, { width: number; height: number }> = {
 };
 
 /** Space reserved for the menu bar (top) and the dock (bottom). */
-const CHROME = { top: 36, bottom: 96, gutter: 8 };
-const MIN_SIZE = { width: 280, height: 240 };
+export const CHROME = { top: 36, bottom: 96, gutter: 8 };
+export const MIN_SIZE = { width: 320, height: 260 };
 
 const clamp = (v: number, min: number, max: number) =>
   Math.min(Math.max(v, min), Math.max(min, max));
@@ -93,6 +107,13 @@ let spawnOffset = 0;
 export const useOS = create<Store>((set, get) => ({
   booted: false,
   setBooted: (v) => set({ booted: v }),
+
+  wifi: true,
+  bluetooth: true,
+  brightness: 1,
+  setWifi: (v) => set({ wifi: v }),
+  setBluetooth: (v) => set({ bluetooth: v }),
+  setBrightness: (v) => set({ brightness: Math.min(1, Math.max(0.4, v)) }),
 
   windows: [],
   topZ: 10,
@@ -140,7 +161,11 @@ export const useOS = create<Store>((set, get) => ({
 
   focusApp: (id) => {
     const { windows, topZ } = get();
-    if (!windows.find((w) => w.id === id)) return;
+    const target = windows.find((w) => w.id === id);
+    if (!target) return;
+    // Focus fires on every pointer-down inside a window; bailing out when it's
+    // already frontmost keeps that from re-rendering the whole desktop.
+    if (target.z === topZ && !target.minimized) return;
     set({
       windows: windows.map((w) =>
         w.id === id ? { ...w, z: topZ + 1, minimized: false } : w
@@ -200,12 +225,14 @@ export const useOS = create<Store>((set, get) => ({
     });
   },
 
-  resizeWindow: (id, width, height) =>
+  resizeWindow: (id, geometry) => {
+    const { vw, vh } = viewport();
     set({
       windows: get().windows.map((w) =>
-        w.id === id ? { ...w, width, height } : w
+        w.id === id ? { ...w, ...fitToViewport({ ...w, ...geometry }, vw, vh) } : w
       ),
-    }),
+    });
+  },
 
   syncViewport: (vw, vh) =>
     set({

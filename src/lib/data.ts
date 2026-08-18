@@ -42,6 +42,8 @@ export type Project = {
   link?: string;
   repo?: string;
   accent: string; // tailwind gradient classes
+  /** Spans the full width of the bento grid — reserve it for one project. */
+  featured?: boolean;
 };
 
 // TODO: add named client / personal projects here — the CV documents the work
@@ -57,6 +59,7 @@ export const projects: Project[] = [
     tags: ["Next.js", "TypeScript", "Tailwind CSS", "shadcn/ui"],
     repo: "https://github.com/Eliada02",
     accent: "from-brand-cerise to-brand-magenta",
+    featured: true,
   },
   {
     id: "freelance-client-apps",
