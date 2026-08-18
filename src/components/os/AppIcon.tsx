@@ -1,7 +1,5 @@
 "use client";
 
-import type { AppMeta } from "@/lib/apps";
-
 /**
  * Apple doesn't use a plain rounded rectangle — app icons are a superellipse
  * ("squircle") with continuous corner curvature. A `border-radius` can't
@@ -27,15 +25,14 @@ export function SquircleDefs() {
 }
 
 export function AppIcon({
-  app,
+  art: Art,
   // The caller owns sizing — passing a size here would collide with `size-full`.
   className = "size-full",
 }: {
-  app: AppMeta;
+  /** Full-bleed 100x100 art; this clips it to the macOS squircle. */
+  art: React.ComponentType;
   className?: string;
 }) {
-  const Art = app.Art;
-
   return (
     // The shadow lives on an outer wrapper: `drop-shadow` follows the clipped
     // silhouette, whereas `box-shadow` would trace the unclipped box.

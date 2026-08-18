@@ -8,7 +8,9 @@ export type AppId =
   | "experience"
   | "skills"
   | "contact"
-  | "terminal";
+  | "terminal"
+  | "code"
+  | "design";
 
 export type WindowState = {
   id: AppId;
@@ -32,6 +34,13 @@ type Store = {
   bluetooth: boolean;
   /** 0.4–1. Multiplies wallpaper luminance, like a real display slider. */
   brightness: number;
+  /**
+   * Where the user has dragged each desktop icon, as an offset from its
+   * default grid slot. Offsets rather than absolute points, so the icons
+   * still reflow correctly against a right-anchored grid on resize.
+   */
+  iconOffsets: Record<string, { x: number; y: number }>;
+  setIconOffset: (id: string, x: number, y: number) => void;
   setWifi: (v: boolean) => void;
   setBluetooth: (v: boolean) => void;
   setBrightness: (v: number) => void;
@@ -64,6 +73,8 @@ const DEFAULT_SIZE: Record<AppId, { width: number; height: number }> = {
   skills: { width: 640, height: 520 },
   contact: { width: 560, height: 480 },
   terminal: { width: 680, height: 440 },
+  code: { width: 900, height: 600 },
+  design: { width: 880, height: 580 },
 };
 
 /** Space reserved for the menu bar (top) and the dock (bottom). */
@@ -111,6 +122,9 @@ export const useOS = create<Store>((set, get) => ({
   wifi: true,
   bluetooth: true,
   brightness: 1,
+  iconOffsets: {},
+  setIconOffset: (id, x, y) =>
+    set({ iconOffsets: { ...get().iconOffsets, [id]: { x, y } } }),
   setWifi: (v) => set({ wifi: v }),
   setBluetooth: (v) => set({ bluetooth: v }),
   setBrightness: (v) => set({ brightness: Math.min(1, Math.max(0.4, v)) }),

@@ -2,11 +2,54 @@
 
 import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
+import { Tooltip } from "radix-ui";
 import { ArrowUpRight, X } from "lucide-react";
 import { projects, type Project } from "@/lib/data";
-import { BrandIcon } from "@/components/BrandIcon";
+import { BrandIcon, getBrand } from "@/components/BrandIcon";
+import { BrowserFrame } from "@/components/BrowserFrame";
 
-/** Tech-stack pill. Same shape everywhere so cards and the sheet agree. */
+/**
+ * A tech badge. Where a brand mark exists the badge is the mark alone, with
+ * the name on hover — a row of logos reads faster than a row of words, and
+ * the card has little room. Anything unbranded ("REST APIs", "SQL") keeps its
+ * text, because a blank square communicates nothing.
+ */
+function TechBadge({ label }: { label: string }) {
+  const brand = getBrand(label);
+
+  if (!brand) {
+    return (
+      <span className="inline-flex h-6 items-center rounded-md bg-secondary px-2 text-[10px] font-medium text-secondary-foreground">
+        {label}
+      </span>
+    );
+  }
+
+  return (
+    <Tooltip.Root>
+      <Tooltip.Trigger asChild>
+        <span
+          // Focusable so the tooltip is reachable without a pointer.
+          tabIndex={0}
+          className="grid size-6 shrink-0 place-items-center rounded-md bg-secondary outline-none ring-ring focus-visible:ring-2"
+        >
+          <BrandIcon label={label} className="size-3.5" />
+          <span className="sr-only">{label}</span>
+        </span>
+      </Tooltip.Trigger>
+      <Tooltip.Portal>
+        <Tooltip.Content
+          sideOffset={6}
+          className="material-thick rim z-10000 rounded-md px-2 py-1 text-[11px] font-medium text-foreground shadow-lg data-[state=delayed-open]:animate-in data-[state=delayed-open]:fade-in-0 data-[state=delayed-open]:zoom-in-95"
+        >
+          {label}
+        </Tooltip.Content>
+      </Tooltip.Portal>
+    </Tooltip.Root>
+  );
+}
+
+/** Full pill with the name spelled out — used where there's room. */
 function TechPill({ label }: { label: string }) {
   return (
     <span className="inline-flex items-center gap-1.5 rounded-full bg-secondary px-2.5 py-0.5 text-[11px] font-medium text-secondary-foreground">
@@ -75,9 +118,9 @@ function ProjectCard({
   return (
     <motion.div
       layout
-      // The feature tile takes the full width and a taller banner; the rest
-      // tile beneath it. That contrast is what makes the grid read as bento
-      // rather than as a plain two-column list.
+      // The feature tile takes the full width; the rest tile beneath it. That
+      // contrast is what makes the grid read as bento rather than as a plain
+      // two-column list.
       className={featured ? "@lg:col-span-2" : ""}
       whileHover={{ y: -2 }}
       transition={{ type: "spring", stiffness: 400, damping: 30 }}
@@ -88,12 +131,13 @@ function ProjectCard({
           accessible name instead. */}
       <div
         onClick={onOpen}
-        className="group relative flex h-full cursor-pointer flex-col overflow-hidden rounded-xl border border-border bg-card text-left shadow-sm transition hover:shadow-md focus-within:ring-2 focus-within:ring-ring"
+        className="group relative flex h-full cursor-pointer flex-col overflow-hidden rounded-xl border border-border bg-card p-3 text-left shadow-sm transition hover:shadow-md focus-within:ring-2 focus-within:ring-ring"
       >
-        <div
-          className={`relative bg-linear-to-br ${project.accent} ${
-            featured ? "h-28 @lg:h-36" : "h-24"
-          }`}
+        <BrowserFrame
+          url={project.link ?? project.repo}
+          accent={project.accent}
+          screenshot={project.screenshot}
+          alt={project.screenshotAlt}
         >
           <span className="absolute bottom-2 right-3 text-xs font-medium text-white/85">
             {project.year}
@@ -103,9 +147,9 @@ function ProjectCard({
               Featured
             </span>
           )}
-        </div>
+        </BrowserFrame>
 
-        <div className="flex min-h-0 flex-1 flex-col p-4">
+        <div className="flex min-h-0 flex-1 flex-col pt-3">
           <h3 className="font-semibold tracking-tight">
             <button
               type="button"
@@ -122,14 +166,14 @@ function ProjectCard({
             {project.summary}
           </p>
 
-          <div className="mt-3 flex flex-wrap gap-1.5">
-            {project.tags.slice(0, featured ? 6 : 3).map((tag) => (
-              <TechPill key={tag} label={tag} />
+          <div className="mt-3 flex flex-wrap items-center gap-1.5">
+            {project.tags.map((tag) => (
+              <TechBadge key={tag} label={tag} />
             ))}
           </div>
 
           {/* Pushed to the bottom so cards of different heights still line up. */}
-          <div className="mt-4 pt-0 [&:not(:empty)]:mt-auto [&:not(:empty)]:pt-4">
+          <div className="not-empty:mt-auto not-empty:pt-4">
             <ProjectActions project={project} />
           </div>
         </div>
@@ -165,15 +209,21 @@ function ProjectSheet({
             initial={{ y: "-100%", opacity: 0.6 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: "-100%", opacity: 0.6 }}
-            transition={{ type: "spring", stiffness: 420, damping: 38 }}
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
             className="absolute inset-x-3 top-0 z-30 mx-auto max-h-[calc(100%-1.5rem)] max-w-lg overflow-y-auto rounded-b-2xl border border-t-0 border-border bg-card shadow-2xl @sm:inset-x-6"
           >
-            <div className={`relative h-24 bg-linear-to-br @sm:h-32 ${project.accent}`}>
+            <div className="relative p-3 pb-0">
+              <BrowserFrame
+                url={project.link ?? project.repo}
+                accent={project.accent}
+                screenshot={project.screenshot}
+                alt={project.screenshotAlt}
+              />
               <button
                 type="button"
                 onClick={onClose}
                 aria-label="Close details"
-                className="absolute right-2.5 top-2.5 grid size-8 place-items-center rounded-full bg-black/25 text-white backdrop-blur-sm transition hover:bg-black/40"
+                className="absolute right-5 top-12 grid size-8 place-items-center rounded-full bg-black/30 text-white backdrop-blur-sm transition hover:bg-black/50"
               >
                 <X className="size-4" />
               </button>
@@ -214,27 +264,30 @@ export function ProjectsApp() {
   const [active, setActive] = useState<Project | null>(null);
 
   return (
-    <div className="scroll-overlay h-full overflow-y-auto p-4 @sm:p-6">
-      <h1 className="text-lg font-semibold tracking-tight @sm:text-xl">
-        Selected Work
-      </h1>
-      <p className="mt-1 text-sm text-muted-foreground">
-        A few things I&apos;ve designed and built. Open a card for the detail.
-      </p>
+    // One provider for the whole window; every badge shares its timing.
+    <Tooltip.Provider delayDuration={250} skipDelayDuration={400}>
+      <div className="scroll-overlay h-full overflow-y-auto p-4 @sm:p-6">
+        <h1 className="text-lg font-semibold tracking-tight @sm:text-xl">
+          Selected Work
+        </h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          A few things I&apos;ve designed and built. Open a card for the detail.
+        </p>
 
-      {/* Container queries, not viewport ones: a window can be narrow on a
-          wide display, and the grid has to answer to the window. */}
-      <div className="mt-5 grid auto-rows-fr grid-cols-1 gap-4 @lg:grid-cols-2">
-        {projects.map((project) => (
-          <ProjectCard
-            key={project.id}
-            project={project}
-            onOpen={() => setActive(project)}
-          />
-        ))}
+        {/* Container queries, not viewport ones: a window can be narrow on a
+            wide display, and the grid has to answer to the window. */}
+        <div className="mt-5 grid auto-rows-fr grid-cols-1 gap-4 @lg:grid-cols-2">
+          {projects.map((project) => (
+            <ProjectCard
+              key={project.id}
+              project={project}
+              onOpen={() => setActive(project)}
+            />
+          ))}
+        </div>
+
+        <ProjectSheet project={active} onClose={() => setActive(null)} />
       </div>
-
-      <ProjectSheet project={active} onClose={() => setActive(null)} />
-    </div>
+    </Tooltip.Provider>
   );
 }

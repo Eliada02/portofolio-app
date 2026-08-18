@@ -4,6 +4,8 @@ import { useState } from "react";
 import { BookUser, Link2, MapPin, UserRound } from "lucide-react";
 import { profile, education, skills } from "@/lib/data";
 import { SocialIcon } from "@/components/BrandIcon";
+import { Avatar } from "@/components/Avatar";
+import { socialHref, socialTarget } from "@/lib/contact";
 import { SplitView, type SplitViewSection } from "@/components/os/SplitView";
 
 const SECTIONS: SplitViewSection[] = [
@@ -16,11 +18,6 @@ const SECTIONS: SplitViewSection[] = [
     ],
   },
 ];
-
-const initials = profile.name
-  .split(" ")
-  .map((n) => n[0])
-  .join("");
 
 function Overview() {
   // A short, honest summary of the stack, pulled from the same source the
@@ -35,9 +32,7 @@ function Overview() {
       <div className="h-24 bg-linear-to-br from-brand-cerise via-brand-magenta to-brand-sand @sm:h-28" />
       <div className="-mt-10 px-5 pb-8 @sm:-mt-12 @sm:px-8">
         <div className="flex flex-wrap items-end gap-3 @sm:gap-4">
-          <div className="grid size-20 place-items-center rounded-2xl bg-linear-to-br from-brand-cerise to-brand-magenta text-2xl font-semibold text-white shadow-xl ring-4 ring-background @sm:size-24 @sm:text-3xl">
-            {initials}
-          </div>
+          <Avatar className="size-20 rounded-full shadow-xl ring-4 ring-background @sm:size-24" />
           <div className="pb-1">
             <h1 className="text-xl font-semibold tracking-tight @sm:text-2xl">
               {profile.name}
@@ -109,8 +104,8 @@ function Links() {
         {profile.socials.map((social) => (
           <a
             key={social.label}
-            href={social.url}
-            target="_blank"
+            href={socialHref(social)}
+            target={socialTarget(social.label)}
             rel="noreferrer"
             className="flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3 transition hover:bg-secondary"
           >

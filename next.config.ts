@@ -11,6 +11,10 @@ const nextConfig: NextConfig = {
     root: __dirname,
   },
   images: {
+    // `output: "export"` has no server to run the optimizer on, so images
+    // must be served as authored. Required for next/image to build at all
+    // under a static export.
+    unoptimized: true,
     // Next 16 allowlists optimizer qualities and defaults to [75]; requesting
     // anything outside the list 400s. Kept at hand for when a photo asset
     // needs more than the default.

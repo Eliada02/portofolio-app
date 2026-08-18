@@ -5,6 +5,8 @@ import { ExperienceApp } from "@/components/apps/ExperienceApp";
 import { SkillsApp } from "@/components/apps/SkillsApp";
 import { ContactApp } from "@/components/apps/ContactApp";
 import { TerminalApp } from "@/components/apps/TerminalApp";
+import { CodeApp } from "@/components/apps/CodeApp";
+import { DesignApp } from "@/components/apps/DesignApp";
 import {
   ContactsArt,
   FinderArt,
@@ -13,6 +15,7 @@ import {
   MailArt,
   TerminalArt,
 } from "@/components/os/MacIcons";
+import { VSCodeArt, FigmaArt } from "@/components/os/ToolIcons";
 
 export type AppMeta = {
   id: AppId;
@@ -20,6 +23,7 @@ export type AppMeta = {
   /** Full-bleed icon art; `AppIcon` clips it to the macOS squircle. */
   Art: React.ComponentType;
   Component: React.ComponentType;
+  /** Pinned to the macOS dock. Desktop shortcuts are a separate registry. */
   showInDock: boolean;
   /** Pinned to the iOS dock on mobile. Dock apps don't repeat in the grid. */
   iosDock?: boolean;
@@ -73,6 +77,23 @@ export const APPS: AppMeta[] = [
     Art: TerminalArt,
     Component: TerminalApp,
     showInDock: true,
+  },
+  // Tool apps. They're reached from the desktop shortcuts rather than the
+  // dock, which stays reserved for the portfolio itself — but they're real
+  // apps, so they window, minimise and appear on the phone launcher.
+  {
+    id: "code",
+    name: "VS Code",
+    Art: VSCodeArt,
+    Component: CodeApp,
+    showInDock: false,
+  },
+  {
+    id: "design",
+    name: "Figma",
+    Art: FigmaArt,
+    Component: DesignApp,
+    showInDock: false,
   },
 ];
 

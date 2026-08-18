@@ -44,6 +44,13 @@ export type Project = {
   accent: string; // tailwind gradient classes
   /** Spans the full width of the bento grid — reserve it for one project. */
   featured?: boolean;
+  /**
+   * Path under public/, e.g. "/shots/expense-tracker.png". Without one the
+   * card frame paints the accent gradient instead of an empty placeholder.
+   */
+  screenshot?: string;
+  /** Describes the screenshot for screen readers. Required alongside one. */
+  screenshotAlt?: string;
 };
 
 // TODO: add named client / personal projects here — the CV documents the work

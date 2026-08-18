@@ -148,7 +148,7 @@ export function Dock() {
                 isFrontmost ? minimizeApp(app.id) : openApp(app.id)
               }
             >
-              <AppIcon app={app} />
+              <AppIcon art={app.Art} />
             </DockItem>
           );
         })}

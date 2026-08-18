@@ -7,6 +7,7 @@ import { useClock, formatDate, formatTime } from "@/lib/useClock";
 import { ChevronRight, ChevronUp } from "lucide-react";
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { HelloMark, HELLO_DURATION } from "./HelloMark";
+import { Avatar } from "@/components/Avatar";
 
 /** Beat between the last stroke landing and the screen lifting away. */
 const HOLD = 0.5;
@@ -57,12 +58,7 @@ export function BootScreen() {
 
           {/* `relative` on each foreground child keeps it painted above the
               click-anywhere layer, which is a positioned z-0 sibling. */}
-          <div className="relative grid size-24 place-items-center rounded-full bg-linear-to-br from-brand-cerise to-brand-magenta text-3xl font-semibold text-white shadow-2xl ring-4 ring-white/20 sm:size-28 sm:text-4xl">
-            {profile.name
-              .split(" ")
-              .map((n) => n[0])
-              .join("")}
-          </div>
+          <Avatar className="relative size-24 rounded-full shadow-2xl ring-4 ring-white/20 sm:size-28" />
           <div className="relative px-6 text-center">
             <h1 className="text-xl font-semibold text-white sm:text-2xl">
               {profile.name}

@@ -26,6 +26,7 @@ import {
   siFigma,
   siPostman,
   siShadcnui,
+  siWhatsapp,
 } from "simple-icons";
 import { EXTRA_BRANDS } from "./brand-paths";
 
@@ -64,6 +65,7 @@ const BRANDS: Record<string, Brand> = {
   Figma: siFigma,
   Postman: siPostman,
   "shadcn/ui": siShadcnui,
+  WhatsApp: siWhatsapp,
   Slack: EXTRA_BRANDS.slack,
   LinkedIn: EXTRA_BRANDS.linkedin,
   "VS Code": EXTRA_BRANDS.visualstudiocode,

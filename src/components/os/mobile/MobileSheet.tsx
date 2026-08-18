@@ -15,11 +15,11 @@ export interface MobileSheetProps {
 const DISMISS_OFFSET = 120;
 const DISMISS_VELOCITY = 500;
 
+/** The iOS 18 presentation curve: swift, with a barely-there settle. */
 const SHEET_SPRING = {
   type: "spring",
-  stiffness: 380,
-  damping: 36,
-  mass: 0.9,
+  stiffness: 300,
+  damping: 25,
 } as const;
 
 /**
@@ -117,7 +117,11 @@ export function MobileSheet({
               </div>
             </div>
 
-            <div className="@container scroll-overlay min-h-0 flex-1 overflow-y-auto overscroll-contain">
+            {/* overflow-x-hidden is the backstop against a sideways leak on
+                a phone. Every app that genuinely needs horizontal scrolling
+                (the code pane, the dock) does it inside its own box, so
+                nothing legitimate is clipped here. */}
+            <div className="@container scroll-overlay min-h-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-contain">
               {children}
             </div>
           </motion.div>

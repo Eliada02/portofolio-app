@@ -1,9 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { Check, Copy, Phone, Send } from "lucide-react";
+import { Check, Copy, Phone, Send, Sparkles } from "lucide-react";
 import { profile } from "@/lib/data";
-import { SocialIcon } from "@/components/BrandIcon";
+import {
+  DRAFT_BODY,
+  DRAFT_SUBJECT,
+  mailtoDraft,
+  socialHref,
+  socialTarget,
+  whatsappUrl,
+} from "@/lib/contact";
+import { BrandIcon, SocialIcon } from "@/components/BrandIcon";
 
 /** A Mail compose header row: label, then a borderless field. */
 function Field({
@@ -43,15 +51,17 @@ export function ContactApp() {
     }
   };
 
-  // A static site has no inbox to post to, so Send hands off to the user's
-  // real mail client with the message already filled in.
+  /** Fills the composer with the standard opener, ready to edit or send. */
+  const useDraft = () => {
+    setSubject(DRAFT_SUBJECT);
+    setBody(DRAFT_BODY);
+  };
+
+  // A static site has no inbox to post to, so Send hands off to the visitor's
+  // real mail client with whatever is in the composer already filled in.
   const send = (e: React.FormEvent) => {
     e.preventDefault();
-    const params = new URLSearchParams();
-    if (subject.trim()) params.set("subject", subject.trim());
-    if (body.trim()) params.set("body", body.trim());
-    const query = params.toString();
-    window.location.href = `mailto:${profile.email}${query ? `?${query}` : ""}`;
+    window.location.href = mailtoDraft({ subject, body });
   };
 
   return (
@@ -66,13 +76,23 @@ export function ContactApp() {
             Opens in your mail app — nothing is sent from this page.
           </p>
         </div>
-        <button
-          type="submit"
-          form="compose"
-          className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-primary px-3.5 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90 active:scale-95"
-        >
-          <Send className="size-4" /> Send
-        </button>
+        <div className="flex shrink-0 items-center gap-2">
+          <button
+            type="button"
+            onClick={useDraft}
+            className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-2 text-sm font-medium transition hover:bg-secondary active:scale-95"
+          >
+            <Sparkles className="size-4" />
+            <span className="hidden @sm:inline">Compose Draft</span>
+          </button>
+          <button
+            type="submit"
+            form="compose"
+            className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3.5 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90 active:scale-95"
+          >
+            <Send className="size-4" /> Send
+          </button>
+        </div>
       </div>
 
       <form
@@ -95,7 +115,7 @@ export function ContactApp() {
             id="compose-subject"
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
-            placeholder="Let's work together"
+            placeholder={DRAFT_SUBJECT}
             // 16px on touch keeps iOS Safari from zooming the field on focus.
             className="min-w-0 flex-1 bg-transparent text-base outline-none placeholder:text-muted-foreground/60 @sm:text-[13px]"
           />
@@ -113,6 +133,21 @@ export function ContactApp() {
       {/* Quick actions — the Messages-style row under the compose sheet. */}
       <div className="shrink-0 border-t border-border bg-foreground/3 p-3">
         <div className="flex flex-wrap items-center gap-2">
+          <a
+            href={whatsappUrl}
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Message me on WhatsApp — opens in a new tab"
+            className="inline-flex min-h-9 items-center gap-2 rounded-full bg-[#1FA855] px-3 py-1.5 text-xs font-medium text-white transition hover:brightness-110 active:scale-95"
+          >
+            <BrandIcon
+              label="WhatsApp"
+              colored={false}
+              className="size-3.5 shrink-0"
+            />
+            WhatsApp
+          </a>
+
           <button
             type="button"
             onClick={copyEmail}
@@ -139,8 +174,8 @@ export function ContactApp() {
             {profile.socials.map((social) => (
               <a
                 key={social.label}
-                href={social.url}
-                target="_blank"
+                href={socialHref(social)}
+                target={socialTarget(social.label)}
                 rel="noreferrer"
                 aria-label={social.label}
                 title={social.label}

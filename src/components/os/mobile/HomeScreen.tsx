@@ -7,9 +7,10 @@ import { profile } from "@/lib/data";
 import { useClock, formatDate, formatTime } from "@/lib/useClock";
 import { useTheme } from "@/lib/theme";
 import { AppIcon } from "../AppIcon";
+import { Avatar } from "@/components/Avatar";
 import { motion } from "motion/react";
 
-const gridApps = APPS.filter((a) => a.showInDock && !a.iosDock);
+const gridApps = APPS.filter((a) => !a.iosDock);
 const dockApps = APPS.filter((a) => a.iosDock);
 
 function HomeIcon({
@@ -30,7 +31,7 @@ function HomeIcon({
       aria-label={`Open ${app.name}`}
     >
       <motion.span whileTap={{ scale: 0.92 }} className="block w-full">
-        <AppIcon app={app} className="mx-auto size-15" />
+        <AppIcon art={app.Art} className="mx-auto size-15" />
       </motion.span>
       {withLabel && (
         <span className="max-w-full truncate text-[11px] font-medium leading-tight text-foreground drop-shadow-sm">
@@ -48,19 +49,12 @@ function HomeIcon({
 export function HomeScreen({ onOpen }: { onOpen: (id: AppId) => void }) {
   const now = useClock();
   const { resolved, toggle } = useTheme();
-  const initials = profile.name
-    .split(" ")
-    .map((n) => n[0])
-    .join("");
-
   return (
     <div className="flex h-full flex-col px-6 pb-3 pt-4">
       {/* Widget */}
       <div className="material-thin rim relative rounded-3xl p-4 shadow-lg">
         <div className="flex items-center gap-3">
-          <div className="grid size-11 shrink-0 place-items-center rounded-full bg-linear-to-br from-brand-cerise to-brand-magenta text-sm font-semibold text-white ring-1 ring-white/25">
-            {initials}
-          </div>
+          <Avatar className="size-11 shrink-0 rounded-full ring-1 ring-white/25" />
           <div className="min-w-0">
             <p className="truncate text-sm font-semibold text-foreground">
               {profile.name}

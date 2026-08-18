@@ -2,10 +2,10 @@
 
 import { useEffect, useMemo } from "react";
 import { useOS } from "@/lib/store";
-import { APPS } from "@/lib/apps";
 import { useIsMobile } from "@/lib/useMediaQuery";
 import { MenuBar } from "./MenuBar";
-import { AppIcon, SquircleDefs } from "./AppIcon";
+import { SquircleDefs } from "./AppIcon";
+import { DesktopIcons } from "./DesktopIcons";
 import { Dock } from "./Dock";
 import { Window } from "./Window";
 import { BootScreen } from "./BootScreen";
@@ -63,7 +63,6 @@ function Wallpaper() {
 
 function DesktopShell() {
   const windows = useOS((s) => s.windows);
-  const openApp = useOS((s) => s.openApp);
   const syncViewport = useOS((s) => s.syncViewport);
 
   // Keep windows inside the viewport when it resizes or the device rotates.
@@ -90,30 +89,7 @@ function DesktopShell() {
     <>
       <MenuBar />
 
-      {/* Desktop shortcut icons, down the right edge */}
-      <div className="absolute right-4 top-10 flex flex-col gap-4">
-        {APPS.filter((a) => a.showInDock).map((app) => (
-          <button
-            key={app.id}
-            onDoubleClick={() => openApp(app.id)}
-            onClick={(e) => {
-              // Keyboard activation reports detail 0 — treat it as open.
-              if (e.detail === 0) openApp(app.id);
-            }}
-            className="group flex w-16 flex-col items-center gap-1 rounded-lg p-1 outline-none focus-visible:ring-2 focus-visible:ring-white/80"
-            title={`Open ${app.name}`}
-            aria-label={`Open ${app.name}`}
-          >
-            <AppIcon
-              app={app}
-              className="size-12 transition group-hover:scale-105 group-active:scale-95"
-            />
-            <span className="rounded px-1 text-center text-[11px] leading-tight font-medium text-white/90 drop-shadow group-hover:bg-brand-cerise/75">
-              {app.name}
-            </span>
-          </button>
-        ))}
-      </div>
+      <DesktopIcons />
 
       <AnimatePresence>
         {windows.map((w) => (
