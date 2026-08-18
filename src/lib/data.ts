@@ -16,9 +16,13 @@ export const profile = {
    * instead. Supply at least 512x512, square and centred on the face:
    * it renders up to 128px, which is 256px on a retina display.
    */
-  photo: undefined as string | undefined,
-  /** CSS object-position for the photo, if the face isn't dead centre. */
-  photoPosition: "center 30%",
+  photo: "/avatar-1.svg" as string | undefined,
+  /**
+   * CSS object-position for the photo. The source is 360x202, so a square
+   * frame fills vertically and crops horizontally — only the x value does
+   * anything, and 51% is where the face sits.
+   */
+  photoPosition: "51% 50%",
   tagline: "Full-stack developer shipping end-to-end web products.",
   /** The one-line value proposition, used as the hero headline. */
   headline:

@@ -3,19 +3,18 @@ import { useId } from "react";
 import { profile } from "@/lib/data";
 
 /**
- * The developer avatar, drawn to match `public/avatar-1.avif`.
+ * The developer avatar.
  *
- * Redrawn as vector paths rather than wrapping the bitmap in an <svg>: the
- * source is 360x202 with the crown cropped and no alpha channel, so it can
- * neither scale to the sizes this is used at (44–112px) nor mask cleanly into
- * a circle. Auto-tracing a shaded illustration would have produced hundreds of
- * paths that turn to mush at 44px. This is a couple of KB and stays crisp at
- * any size.
+ * `profile.photo` points at `public/avatar-1.svg` — a traced vector of the
+ * portrait, so it scales cleanly to every size this renders at. It's served
+ * as an image rather than inlined: at ~150KB of path data, inlining it would
+ * put the whole thing in the HTML on every page load and repeat it for each
+ * of the three places an avatar appears.
  *
- * The palette is sampled from the source image, not eyeballed.
- *
- * Gradient ids are namespaced with `useId` because this renders more than once
- * per page — duplicate ids would make every instance resolve to the first
+ * `DrawnPortrait` below is the fallback for when no photo is configured.
+ * Its palette is sampled from the source image, not eyeballed, and its
+ * gradient ids are namespaced with `useId` — this renders more than once per
+ * page, and duplicate ids would make every instance resolve to the first
  * one's gradients.
  */
 
