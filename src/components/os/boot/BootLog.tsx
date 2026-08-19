@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
-import { profile, skills } from "@/lib/data";
+import { firstName, topSkills } from "@/lib/data";
 
 /** Milliseconds per character, and the beat between finished lines. */
 const CHAR_MS = 18;
@@ -12,16 +12,14 @@ const LINE_PAUSE_MS = 260;
  * The stack line is derived from the same `skills` data the Skills app reads,
  * so a boot log that claims a stack can't drift from the one on the CV.
  */
-const stackLine = () => {
-  const pick = (category: string, n: number) =>
-    skills.find((g) => g.category === category)?.items.slice(0, n) ?? [];
-  return [...pick("Frontend", 3), ...pick("Backend", 2)].join(", ");
-};
+const stackLine = [...topSkills("Frontend", 3), ...topSkills("Backend", 2)].join(
+  ", "
+);
 
 const LINES = [
   "Initializing EliadaOS…",
-  `Mounting /Users/${profile.name.split(" ")[0].toLowerCase()}`,
-  `Stack: ${stackLine()}`,
+  `Mounting /Users/${firstName.toLowerCase()}`,
+  `Stack: ${stackLine}`,
   "All services ready.",
 ];
 

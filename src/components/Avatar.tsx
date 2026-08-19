@@ -62,22 +62,13 @@ const HAIR_FRINGE: [number, number, number][] = [
   [46, 27, 7.5], [58, 24.5, 8], [70, 27, 7.5], [78, 34, 7], [42, 34, 7],
 ];
 
-export interface AvatarProps {
-  className?: string;
-  /**
-   * Overrides `profile.photo`. Pass `null` to force the drawn portrait even
-   * when a photo is configured.
-   */
-  photo?: string | null;
-}
-
 /**
  * Renders `profile.photo` when one is set, and the drawn portrait otherwise.
  * Both fill the same round frame, so every caller keeps its own sizing and
  * ring and nothing else has to change when a photo is added.
  */
-export function Avatar({ className = "size-24", photo }: AvatarProps) {
-  const src = photo === undefined ? profile.photo : photo;
+export function Avatar({ className = "size-24" }: { className?: string }) {
+  const src = profile.photo;
 
   if (src) {
     return (

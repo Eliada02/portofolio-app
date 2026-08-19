@@ -2,10 +2,11 @@
 
 import { Menubar } from "radix-ui";
 import { Apple, Wifi, WifiOff } from "lucide-react";
-import { useOS } from "@/lib/store";
+import { frontmostWindow, useOS } from "@/lib/store";
 import { APP_MAP, APPS } from "@/lib/apps";
 import { useClock, formatDate, formatTime } from "@/lib/useClock";
-import { useTheme, type Theme } from "@/lib/theme";
+import { useTheme } from "@/lib/theme";
+import { githubUrl } from "@/lib/contact";
 import { profile } from "@/lib/data";
 import { BatteryWidget } from "./BatteryWidget";
 import { ControlCenter } from "./ControlCenter";
@@ -18,9 +19,6 @@ import {
   MenuSeparator,
   MenuTrigger,
 } from "./MenuPrimitives";
-
-const githubUrl =
-  profile.socials.find((s) => s.label === "GitHub")?.url ?? "https://github.com";
 
 export function MenuBar() {
   const now = useClock();
@@ -35,11 +33,8 @@ export function MenuBar() {
   const setBooted = useOS((s) => s.setBooted);
   const { theme, setTheme } = useTheme();
 
-  const frontmost = windows
-    .filter((w) => !w.minimized)
-    .sort((a, b) => b.z - a.z)[0];
-  const activeApp = frontmost ? APP_MAP[frontmost.id] : null;
-  const activeName = activeApp?.name ?? "Finder";
+  const frontmost = frontmostWindow(windows);
+  const activeName = frontmost ? APP_MAP[frontmost.id].name : "Finder";
 
   const zoomFrontmost = () => {
     if (!frontmost) return;
@@ -87,10 +82,7 @@ export function MenuBar() {
             </MenuItem>
             <MenuItem onSelect={() => openApp("terminal")}>Terminal…</MenuItem>
             <MenuSeparator />
-            <MenuRadioGroup
-              value={theme}
-              onValueChange={(v) => setTheme(v as Theme)}
-            >
+            <MenuRadioGroup value={theme} onValueChange={setTheme}>
               <MenuRadioItem value="light">Light Appearance</MenuRadioItem>
               <MenuRadioItem value="dark">Dark Appearance</MenuRadioItem>
               <MenuRadioItem value="system">Match System</MenuRadioItem>
@@ -183,10 +175,7 @@ export function MenuBar() {
               {frontmost?.maximized ? "Exit Full Screen" : "Enter Full Screen"}
             </MenuItem>
             <MenuSeparator />
-            <MenuRadioGroup
-              value={theme}
-              onValueChange={(v) => setTheme(v as Theme)}
-            >
+            <MenuRadioGroup value={theme} onValueChange={setTheme}>
               <MenuRadioItem value="light">Light</MenuRadioItem>
               <MenuRadioItem value="dark">Dark</MenuRadioItem>
               <MenuRadioItem value="system">Auto</MenuRadioItem>

@@ -1,4 +1,4 @@
-import { profile } from "@/lib/data";
+import { firstName, profile } from "@/lib/data";
 
 /**
  * Outbound contact links, built in one place.
@@ -9,20 +9,28 @@ import { profile } from "@/lib/data";
  */
 
 /** wa.me wants digits only: no +, spaces or dashes. */
-export const whatsappNumber = profile.phone.replace(/\D/g, "");
+const whatsappNumber = profile.phone.replace(/\D/g, "");
 
 export const DRAFT_SUBJECT = `Opportunity / Project Inquiry — ${profile.name}`;
 
-export const DRAFT_BODY = `Hi ${profile.name.split(" ")[0]},
+export const DRAFT_BODY = `Hi ${firstName},
 
 I visited your portfolio and would love to connect regarding
 `;
 
-const WHATSAPP_GREETING = `Hi ${profile.name.split(" ")[0]}, I saw your portfolio and would love to connect.`;
+const WHATSAPP_GREETING = `Hi ${firstName}, I saw your portfolio and would love to connect.`;
 
 export const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
   WHATSAPP_GREETING
 )}`;
+
+/**
+ * The GitHub profile. Derived from the socials list rather than hard-coded, so
+ * the menu bar and the desktop alias can't point at different accounts.
+ */
+export const githubUrl =
+  profile.socials.find((s) => s.label === "GitHub")?.url ??
+  "https://github.com";
 
 /**
  * A mailto: with the draft prefilled.

@@ -1,6 +1,5 @@
 import type { AppId } from "@/lib/store";
-import { whatsappUrl } from "@/lib/contact";
-import { profile } from "@/lib/data";
+import { githubUrl, whatsappUrl } from "@/lib/contact";
 import {
   VSCodeArt,
   FigmaArt,
@@ -32,10 +31,6 @@ export type DesktopItem = {
   /** macOS badges an alias with a small arrow; we badge outbound links. */
   alias?: boolean;
 };
-
-const githubUrl =
-  profile.socials.find((s) => s.label === "GitHub")?.url ??
-  "https://github.com";
 
 export const DESKTOP_ITEMS: DesktopItem[] = [
   {

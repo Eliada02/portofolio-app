@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Check, Copy, Phone, Send, Sparkles } from "lucide-react";
-import { profile } from "@/lib/data";
+import { firstName, profile } from "@/lib/data";
 import {
   DRAFT_BODY,
   DRAFT_SUBJECT,
@@ -125,7 +125,7 @@ export function ContactApp() {
           value={body}
           onChange={(e) => setBody(e.target.value)}
           aria-label="Message"
-          placeholder={`Hi ${profile.name.split(" ")[0]} —`}
+          placeholder={`Hi ${firstName} —`}
           className="scroll-overlay min-h-0 flex-1 resize-none bg-transparent p-4 text-base leading-relaxed outline-none placeholder:text-muted-foreground/60 @sm:text-sm"
         />
       </form>

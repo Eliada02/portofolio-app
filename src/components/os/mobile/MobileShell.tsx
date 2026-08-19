@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { ChevronUp } from "lucide-react";
-import { useOS } from "@/lib/store";
+import { frontmostWindow, lastMinimizedWindow, useOS } from "@/lib/store";
 import { APP_MAP } from "@/lib/apps";
 import { StatusBar } from "./StatusBar";
 import { HomeScreen } from "./HomeScreen";
@@ -29,11 +29,10 @@ export function MobileShell() {
   // whatever was behind it instead of the home screen.
   const goHome = useOS((s) => s.minimizeAll);
 
-  const byDepth = [...windows].sort((a, b) => b.z - a.z);
-  const active = byDepth.find((w) => !w.minimized);
+  const active = frontmostWindow(windows);
   // The most recently used app that's currently in the background: what a
   // swipe up from the bottom brings back.
-  const backgrounded = byDepth.find((w) => w.minimized);
+  const backgrounded = lastMinimizedWindow(windows);
 
   const meta = active ? APP_MAP[active.id] : null;
   const Content = meta?.Component;

@@ -3,11 +3,23 @@
 import { MousePointerClick, PanelBottom, Sparkles } from "lucide-react";
 import { profile } from "@/lib/data";
 import { APPS } from "@/lib/apps";
-import { useOS } from "@/lib/store";
+import { useOS, type AppId } from "@/lib/store";
 import { useIsMobile } from "@/lib/useMediaQuery";
 import { Avatar } from "@/components/Avatar";
 import { AppIcon } from "@/components/os/AppIcon";
 import { HeroActions } from "@/components/HeroActions";
+
+/** One line each, so the list explains itself rather than just naming apps. */
+const APP_BLURB: Partial<Record<AppId, string>> = {
+  about: "Who I am, background and links",
+  projects: "Selected work, with live and source links",
+  experience: "Roles, courses and education",
+  skills: "The stack, grouped by where it lives",
+  contact: "Email, WhatsApp and socials",
+  terminal: "A real shell — try 'help'",
+  code: "This portfolio's own source",
+  design: "The design system behind it",
+};
 
 /**
  * START HERE — the plain-language answer to "what am I looking at?".
@@ -91,15 +103,3 @@ export function WelcomeApp() {
     </div>
   );
 }
-
-/** One line each, so the list explains itself rather than just naming apps. */
-const APP_BLURB: Record<string, string> = {
-  about: "Who I am, background and links",
-  projects: "Selected work, with live and source links",
-  experience: "Roles, courses and education",
-  skills: "The stack, grouped by where it lives",
-  contact: "Email, WhatsApp and socials",
-  terminal: "A real shell — try 'help'",
-  code: "This portfolio's own source",
-  design: "The design system behind it",
-};

@@ -29,9 +29,10 @@ export function BootScreen() {
     return () => clearTimeout(t);
   }, [reduced]);
 
-  const scan = useCallback(() => setPhase("scanning"), []);
+  const scan = () => setPhase("scanning");
 
-  /** Called when the sensor finishes reading. */
+  /** Called when the sensor finishes reading. Stable, so the sensor's own
+   *  scan timer isn't restarted by a re-render mid-read. */
   const unlock = useCallback(() => {
     setPhase("unlocked");
     setTimeout(() => {
@@ -47,12 +48,12 @@ export function BootScreen() {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
-        scan();
+        setPhase("scanning");
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [greeted, phase, scan]);
+  }, [greeted, phase]);
 
   return (
     <div className="fixed inset-0 z-10000 overflow-hidden">

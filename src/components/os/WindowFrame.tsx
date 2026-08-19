@@ -6,7 +6,7 @@ import type { WindowGeometry } from "@/lib/useWindowGeometry";
 import { TrafficLights } from "./TrafficLights";
 
 /** macOS Sequoia title bar height. */
-export const TITLE_BAR_HEIGHT = 38;
+const TITLE_BAR_HEIGHT = 38;
 
 export interface WindowFrameProps {
   title: string;
@@ -32,8 +32,6 @@ export interface WindowFrameProps {
     width: number;
     height: number;
   }) => void;
-  /** Optional trailing title-bar content (window-scoped toolbar items). */
-  toolbar?: React.ReactNode;
   children: React.ReactNode;
 }
 
@@ -72,7 +70,6 @@ export function WindowFrame({
   onToggleMaximize,
   onDragCommit,
   onResizeCommit,
-  toolbar,
   children,
 }: WindowFrameProps) {
   const { x, y, width, height } = geometry;
@@ -204,10 +201,6 @@ export function WindowFrame({
         >
           {title}
         </span>
-
-        {toolbar && (
-          <div className="ml-auto flex items-center gap-1">{toolbar}</div>
-        )}
       </header>
 
       {/* Content. Kept near-opaque: vibrancy belongs to chrome, not to body

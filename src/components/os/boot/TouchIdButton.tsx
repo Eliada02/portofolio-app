@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Check, Fingerprint } from "lucide-react";
 
@@ -33,21 +33,10 @@ const LABEL: Record<UnlockPhase, string> = {
 export function TouchIdButton({ phase, onScan, onComplete }: TouchIdButtonProps) {
   const reduced = useReducedMotion();
   const [hovered, setHovered] = useState(false);
-  const completed = useRef(false);
 
   useEffect(() => {
-    if (phase !== "scanning") {
-      completed.current = false;
-      return;
-    }
-    const t = setTimeout(
-      () => {
-        if (completed.current) return;
-        completed.current = true;
-        onComplete();
-      },
-      reduced ? 200 : SCAN_MS
-    );
+    if (phase !== "scanning") return;
+    const t = setTimeout(onComplete, reduced ? 200 : SCAN_MS);
     return () => clearTimeout(t);
   }, [phase, onComplete, reduced]);
 

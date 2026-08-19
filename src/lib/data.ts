@@ -52,6 +52,9 @@ export const profile = {
   ],
 };
 
+/** How the copy addresses him — in greetings, placeholders and the boot log. */
+export const firstName = profile.name.split(" ")[0];
+
 export type Project = {
   id: string;
   name: string;
@@ -254,6 +257,14 @@ export const skills: SkillGroup[] = [
     ],
   },
 ];
+
+/**
+ * The first `count` entries of a skill group. Both the boot log and the About
+ * header advertise a short stack line; reading it from here keeps either of
+ * them from claiming something the Skills app doesn't list.
+ */
+export const topSkills = (category: string, count: number) =>
+  skills.find((g) => g.category === category)?.items.slice(0, count) ?? [];
 
 export const education = [
   {

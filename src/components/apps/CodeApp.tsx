@@ -1,9 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { motion } from "motion/react";
 import { Files, GitBranch, Search, Settings, X } from "lucide-react";
-import { SOURCE_FILES } from "@/lib/sourceFiles";
+import { SOURCE_FILES, type SourceFile } from "@/lib/sourceFiles";
 import { highlight, TOKEN_COLOR } from "@/lib/highlight";
 import { profile } from "@/lib/data";
 
@@ -20,15 +20,14 @@ const UI = {
   dim: "#8A8A8A",
 };
 
-const LANGUAGE_LABEL: Record<string, string> = {
+const LANGUAGE_LABEL: Record<SourceFile["language"], string> = {
   ts: "TypeScript",
   tsx: "TypeScript React",
   css: "CSS",
 };
 
 function CodePane({ code }: { code: string }) {
-  // Tokenising is pure and the excerpts never change, so it memoises cleanly.
-  const lines = useMemo(() => highlight(code), [code]);
+  const lines = highlight(code);
 
   return (
     <pre

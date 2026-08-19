@@ -106,17 +106,24 @@ export function MenuSeparator() {
   );
 }
 
-export function MenuRadioGroup({
+/**
+ * Generic over the value so a caller with a union type — the appearance
+ * setting, say — keeps it end to end instead of casting a bare string back.
+ */
+export function MenuRadioGroup<T extends string>({
   value,
   onValueChange,
   children,
 }: {
-  value: string;
-  onValueChange: (v: string) => void;
+  value: T;
+  onValueChange: (v: T) => void;
   children: React.ReactNode;
 }) {
   return (
-    <Menubar.RadioGroup value={value} onValueChange={onValueChange}>
+    <Menubar.RadioGroup
+      value={value}
+      onValueChange={(v) => onValueChange(v as T)}
+    >
       {children}
     </Menubar.RadioGroup>
   );
@@ -136,28 +143,5 @@ export function MenuRadioItem({
       </Menubar.ItemIndicator>
       {children}
     </Menubar.RadioItem>
-  );
-}
-
-export function MenuCheckboxItem({
-  checked,
-  onCheckedChange,
-  children,
-}: {
-  checked: boolean;
-  onCheckedChange: (v: boolean) => void;
-  children: React.ReactNode;
-}) {
-  return (
-    <Menubar.CheckboxItem
-      checked={checked}
-      onCheckedChange={onCheckedChange}
-      className={`${ITEM_CLASS} pl-7`}
-    >
-      <Menubar.ItemIndicator className="absolute left-2">
-        <Check className="size-3.5" strokeWidth={3} />
-      </Menubar.ItemIndicator>
-      {children}
-    </Menubar.CheckboxItem>
   );
 }

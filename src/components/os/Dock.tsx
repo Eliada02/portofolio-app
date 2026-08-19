@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import { Moon, Sun } from "lucide-react";
 import { APPS } from "@/lib/apps";
-import { useOS } from "@/lib/store";
+import { frontmostWindow, useOS } from "@/lib/store";
 import { useIsTouch, usePrefersReducedMotion } from "@/lib/useMediaQuery";
 import { useTheme } from "@/lib/theme";
 import { AppIcon } from "./AppIcon";
@@ -112,9 +112,7 @@ export function Dock() {
 
   const magnify = !isTouch && !reducedMotion;
 
-  const frontmostId = windows
-    .filter((w) => !w.minimized)
-    .sort((a, b) => b.z - a.z)[0]?.id;
+  const frontmostId = frontmostWindow(windows)?.id;
 
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-[calc(0.5rem+env(safe-area-inset-bottom))] z-9000 flex justify-center px-2">

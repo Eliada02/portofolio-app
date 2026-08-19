@@ -74,6 +74,22 @@ type Store = {
   syncViewport: (vw: number, vh: number) => void;
 };
 
+/** Highest window in the stack whose minimised state matches `minimized`. */
+const topmost = (windows: WindowState[], minimized: boolean) =>
+  windows.reduce<WindowState | null>(
+    (top, w) =>
+      w.minimized === minimized && (!top || w.z > top.z) ? w : top,
+    null
+  );
+
+/** The frontmost window that isn't minimised — "the active app". */
+export const frontmostWindow = (windows: WindowState[]) =>
+  topmost(windows, false);
+
+/** The most recently used backgrounded window — what a swipe up restores. */
+export const lastMinimizedWindow = (windows: WindowState[]) =>
+  topmost(windows, true);
+
 const DEFAULT_SIZE: Record<AppId, { width: number; height: number }> = {
   about: { width: 720, height: 520 },
   projects: { width: 860, height: 600 },

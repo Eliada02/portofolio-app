@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
-import { useOS } from "@/lib/store";
+import { useEffect } from "react";
+import { frontmostWindow, useOS } from "@/lib/store";
 import { useIsMobile } from "@/lib/useMediaQuery";
 import { MenuBar } from "./MenuBar";
 import { SquircleDefs } from "./AppIcon";
@@ -78,13 +78,7 @@ function DesktopShell() {
   }, [syncViewport]);
 
   // Only the frontmost visible window paints as focused.
-  const focusedId = useMemo(
-    () =>
-      windows
-        .filter((w) => !w.minimized)
-        .sort((a, b) => b.z - a.z)[0]?.id ?? null,
-    [windows]
-  );
+  const focusedId = frontmostWindow(windows)?.id ?? null;
 
   return (
     <>

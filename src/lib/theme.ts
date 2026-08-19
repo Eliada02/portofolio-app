@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useSyncExternalStore } from "react";
+import { useSyncExternalStore } from "react";
 
 export type Theme = "light" | "dark" | "system";
 export type ResolvedTheme = "light" | "dark";
@@ -115,10 +115,10 @@ export function useTheme(): ThemeControls {
   );
   const [theme, resolved] = snapshot.split(":") as [Theme, ResolvedTheme];
 
-  const toggle = useCallback(
-    () => setTheme(resolved === "dark" ? "light" : "dark"),
-    [resolved]
-  );
-
-  return { theme, resolved, setTheme, toggle };
+  return {
+    theme,
+    resolved,
+    setTheme,
+    toggle: () => setTheme(resolved === "dark" ? "light" : "dark"),
+  };
 }

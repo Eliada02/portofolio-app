@@ -1,12 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { BookUser, Link2, MapPin, UserRound } from "lucide-react";
-import { profile, education, skills } from "@/lib/data";
+import { BookUser, Link2, MapPin, Sparkles, UserRound } from "lucide-react";
+import { profile, education, topSkills } from "@/lib/data";
 import { SocialIcon } from "@/components/BrandIcon";
 import { Avatar } from "@/components/Avatar";
 import { HeroActions } from "@/components/HeroActions";
-import { Sparkles } from "lucide-react";
 import { socialHref, socialTarget } from "@/lib/contact";
 import { SplitView, type SplitViewSection } from "@/components/os/SplitView";
 
@@ -21,14 +20,11 @@ const SECTIONS: SplitViewSection[] = [
   },
 ];
 
-function Overview() {
-  // A short, honest summary of the stack, pulled from the same source the
-  // Skills app uses so the two can't drift apart.
-  const stackLine = skills
-    .find((g) => g.category === "Frontend")
-    ?.items.slice(0, 4)
-    .join(" · ");
+// A short, honest summary of the stack, pulled from the same source the
+// Skills app uses so the two can't drift apart.
+const stackLine = topSkills("Frontend", 4).join(" · ");
 
+function Overview() {
   return (
     <div>
       <div className="h-24 bg-linear-to-br from-brand-cerise via-brand-magenta to-brand-sand @sm:h-28" />
@@ -133,7 +129,7 @@ function Links() {
   );
 }
 
-const PANES: Record<string, () => React.ReactElement> = {
+const PANES: Record<string, React.ComponentType> = {
   overview: Overview,
   background: Background,
   links: Links,

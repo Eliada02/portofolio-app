@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef } from "react";
+import { useRef } from "react";
 import { Moon, Sun } from "lucide-react";
 import { motion } from "motion/react";
 import { APPS, APP_MAP, type AppMeta } from "@/lib/apps";
@@ -98,13 +98,13 @@ export function HomeScreen({ onOpen }: { onOpen: (id: AppId) => void }) {
   const order =
     stored && stored.length === DEFAULT_GRID.length ? stored : DEFAULT_GRID;
 
-  const commit = useCallback(
-    (next: AppId[]) => setHomeOrder(next),
-    [setHomeOrder]
-  );
-
   const { editing, drag, preview, onPressStart, onPressEnd, exitEditing } =
-    useHomeReorder({ order, columns: COLUMNS, gridRef, onCommit: commit });
+    useHomeReorder({
+      order,
+      columns: COLUMNS,
+      gridRef,
+      onCommit: setHomeOrder,
+    });
 
   const draggedApp = drag ? APP_MAP[drag.id] : null;
 
