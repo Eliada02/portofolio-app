@@ -1,6 +1,6 @@
 "use client";
 
-import { MousePointerClick, PanelBottom, Sparkles } from "lucide-react";
+import { MousePointerClick, PanelBottom } from "lucide-react";
 import { profile } from "@/lib/data";
 import { APPS } from "@/lib/apps";
 import { useOS, type AppId } from "@/lib/store";
@@ -8,6 +8,7 @@ import { useIsMobile } from "@/lib/useMediaQuery";
 import { Avatar } from "@/components/Avatar";
 import { AppIcon } from "@/components/os/AppIcon";
 import { HeroActions } from "@/components/HeroActions";
+import { PortfolioBadge } from "@/components/PortfolioBadge";
 
 /** One line each, so the list explains itself rather than just naming apps. */
 const APP_BLURB: Partial<Record<AppId, string>> = {
@@ -50,10 +51,7 @@ export function WelcomeApp() {
           <Avatar className="size-16 shrink-0 rounded-full shadow-lg ring-2 ring-border @sm:size-20" />
           <div className="min-w-0">
             {/* Purpose pill — says what the interface is before it's explored. */}
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/12 px-2.5 py-1 text-[11px] font-semibold text-primary">
-              <Sparkles className="size-3" />
-              Interactive macOS Portfolio
-            </span>
+            <PortfolioBadge />
             <h1 className="mt-2 text-balance text-xl font-semibold tracking-tight @sm:text-2xl">
               {profile.name}
             </h1>

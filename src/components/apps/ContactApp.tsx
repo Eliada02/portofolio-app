@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Check, Copy, Phone, Send, Sparkles } from "lucide-react";
+import { Check, Copy, FileText, Phone, Send } from "lucide-react";
 import { firstName, profile } from "@/lib/data";
 import {
   DRAFT_BODY,
@@ -80,9 +80,14 @@ export function ContactApp() {
           <button
             type="button"
             onClick={useDraft}
+            // The label is hidden on narrow windows, so the button needs a
+            // name of its own — an icon alone announces nothing.
+            aria-label="Compose draft"
             className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-2 text-sm font-medium transition hover:bg-secondary active:scale-95"
           >
-            <Sparkles className="size-4" />
+            {/* A prepared template, not a generated one — a document, not a
+                wand. There is no AI here and the icon shouldn't imply one. */}
+            <FileText className="size-4" />
             <span className="hidden @sm:inline">Compose Draft</span>
           </button>
           <button

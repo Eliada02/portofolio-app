@@ -3,12 +3,13 @@
 import { useState } from "react";
 import { motion } from "motion/react";
 import {
-  Circle,
   Frame,
   Hand,
+  Layers,
   MousePointer2,
+  Palette,
   PenTool,
-  Square,
+  SquareRoundCorner,
   Type as TypeIcon,
 } from "lucide-react";
 
@@ -23,11 +24,18 @@ import {
 
 type LayerId = "colour" | "material" | "type" | "radius";
 
+// Each icon names its own section: a palette, stacked layers of glass, the
+// type tool, a rounded corner. A generic circle or square would only be a
+// bullet point with extra steps.
 const LAYERS: { id: LayerId; name: string; icon: React.ReactNode }[] = [
-  { id: "colour", name: "Colour", icon: <Circle className="size-3.5" /> },
-  { id: "material", name: "Materials", icon: <Square className="size-3.5" /> },
+  { id: "colour", name: "Colour", icon: <Palette className="size-3.5" /> },
+  { id: "material", name: "Materials", icon: <Layers className="size-3.5" /> },
   { id: "type", name: "Type scale", icon: <TypeIcon className="size-3.5" /> },
-  { id: "radius", name: "Radius", icon: <Frame className="size-3.5" /> },
+  {
+    id: "radius",
+    name: "Radius",
+    icon: <SquareRoundCorner className="size-3.5" />,
+  },
 ];
 
 /** Contrast figures are measured, not estimated — see globals.css. */

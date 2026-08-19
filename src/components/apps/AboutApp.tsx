@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { BookUser, Link2, MapPin, Sparkles, UserRound } from "lucide-react";
+import { BookUser, Link2, MapPin, UserRound } from "lucide-react";
 import { profile, education, topSkills } from "@/lib/data";
 import { SocialIcon } from "@/components/BrandIcon";
 import { Avatar } from "@/components/Avatar";
 import { HeroActions } from "@/components/HeroActions";
+import { PortfolioBadge } from "@/components/PortfolioBadge";
 import { socialHref, socialTarget } from "@/lib/contact";
 import { SplitView, type SplitViewSection } from "@/components/os/SplitView";
 
@@ -46,10 +47,7 @@ function Overview() {
         </div>
 
         {/* Purpose pill, so the OS metaphor is named rather than guessed at. */}
-        <span className="mt-5 inline-flex items-center gap-1.5 rounded-full bg-primary/12 px-2.5 py-1 text-[11px] font-semibold text-primary">
-          <Sparkles className="size-3" />
-          Interactive macOS Portfolio
-        </span>
+        <PortfolioBadge className="mt-5" />
 
         <p className="mt-3 text-balance text-base font-semibold @sm:text-lg">
           {profile.headline}

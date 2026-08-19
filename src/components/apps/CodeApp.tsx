@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "motion/react";
-import { Files, GitBranch, Search, Settings, X } from "lucide-react";
+import { Files, GitBranch, Search, Settings } from "lucide-react";
 import { SOURCE_FILES, type SourceFile } from "@/lib/sourceFiles";
 import { highlight, TOKEN_COLOR } from "@/lib/highlight";
 import { profile } from "@/lib/data";
@@ -170,7 +170,10 @@ export function CodeApp() {
                   key={f.path}
                   type="button"
                   onClick={() => setOpenPath(f.path)}
-                  className="relative flex shrink-0 items-center gap-2 border-r px-3 py-2 text-[12px] transition"
+                  // Trailing padding stands in for VS Code's close button,
+                  // which these tabs don't have — the gutter is spacing, so
+                  // it's spacing rather than an invisible icon.
+                  className="relative flex shrink-0 items-center border-r py-2 pl-3 pr-8 text-[12px] transition"
                   style={{
                     background: active ? UI.tabActive : "transparent",
                     borderColor: UI.border,
@@ -185,7 +188,6 @@ export function CodeApp() {
                     />
                   )}
                   {f.path.split("/").pop()}
-                  <X className="size-3 opacity-0" aria-hidden />
                 </button>
               );
             })}
